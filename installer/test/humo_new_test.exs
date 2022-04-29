@@ -1,11 +1,11 @@
 Code.require_file "mix_helper.exs", __DIR__
 
-defmodule Mix.Tasks.Phx.NewTest do
+defmodule Mix.Tasks.Humo.NewTest do
   use ExUnit.Case, async: false
   import MixHelper
   import ExUnit.CaptureIO
 
-  @app_name "phx_blog"
+  @app_name "humo_blog"
 
   setup do
     # The shell asks to install deps.
@@ -14,33 +14,26 @@ defmodule Mix.Tasks.Phx.NewTest do
     :ok
   end
 
-  test "assets are in sync with installer" do
-    for file <- ~w(favicon.ico phoenix.png) do
-      assert File.read!("../priv/static/#{file}") ==
-        File.read!("templates/phx_static/#{file}")
-    end
-  end
-
   test "returns the version" do
-    Mix.Tasks.Phx.New.run(["-v"])
+    Mix.Tasks.Humo.New.run(["-v"])
     assert_received {:mix_shell, :info, ["Phoenix installer v" <> _]}
   end
 
   test "new with defaults" do
     in_tmp "new with defaults", fn ->
-      Mix.Tasks.Phx.New.run([@app_name])
+      Mix.Tasks.Humo.New.run([@app_name])
 
-      assert_file "phx_blog/README.md"
+      assert_file "humo_blog/README.md"
 
       if Version.match?(System.version(), ">= 1.13.4") do
-        assert_file "phx_blog/.formatter.exs", fn file ->
+        assert_file "humo_blog/.formatter.exs", fn file ->
           assert file =~ "import_deps: [:ecto, :phoenix]"
           assert file =~ "subdirectories: [\"priv/*/migrations\"]"
           assert file =~ "plugins: [Phoenix.LiveView.HTMLFormatter]"
           assert file =~ "inputs: [\"*.{heex,ex,exs}\", \"{config,lib,test}/**/*.{heex,ex,exs}\", \"priv/*/seeds.exs\"]"
         end
       else
-        assert_file "phx_blog/.formatter.exs", fn file ->
+        assert_file "humo_blog/.formatter.exs", fn file ->
           assert file =~ "import_deps: [:ecto, :phoenix]"
           assert file =~ "subdirectories: [\"priv/*/migrations\"]"
           assert file =~ "inputs: [\"*.{ex,exs}\", \"{config,lib,test}/**/*.{ex,exs}\", \"priv/*/seeds.exs\"]"
@@ -48,186 +41,183 @@ defmodule Mix.Tasks.Phx.NewTest do
         end
       end
 
-      assert_file "phx_blog/mix.exs", fn file ->
-        assert file =~ "app: :phx_blog"
+      assert_file "humo_blog/mix.exs", fn file ->
+        assert file =~ "app: :humo_blog"
         refute file =~ "deps_path: \"../../deps\""
         refute file =~ "lockfile: \"../../mix.lock\""
       end
 
-      assert_file "phx_blog/config/config.exs", fn file ->
-        assert file =~ "ecto_repos: [PhxBlog.Repo]"
+      assert_file "humo_blog/config/config.exs", fn file ->
+        assert file =~ "ecto_repos: [HumoBlog.Repo]"
         assert file =~ "config :phoenix, :json_library, Jason"
-        refute file =~ "namespace: PhxBlog"
-        refute file =~ "config :phx_blog, :generators"
+        refute file =~ "namespace: HumoBlog"
+        refute file =~ "config :humo_blog, :generators"
       end
 
-      assert_file "phx_blog/config/prod.exs", fn file ->
+      assert_file "humo_blog/config/prod.exs", fn file ->
         assert file =~ "port: 443"
       end
 
-      assert_file "phx_blog/config/runtime.exs", ~r/ip: {0, 0, 0, 0, 0, 0, 0, 0}/
+      assert_file "humo_blog/config/runtime.exs", ~r/ip: {0, 0, 0, 0, 0, 0, 0, 0}/
 
-      assert_file "phx_blog/lib/phx_blog/application.ex", ~r/defmodule PhxBlog.Application do/
-      assert_file "phx_blog/lib/phx_blog.ex", ~r/defmodule PhxBlog do/
-      assert_file "phx_blog/mix.exs", fn file ->
-        assert file =~ "mod: {PhxBlog.Application, []}"
+      assert_file "humo_blog/lib/humo_blog/application.ex", ~r/defmodule HumoBlog.Application do/
+      assert_file "humo_blog/lib/humo_blog.ex", ~r/defmodule HumoBlog do/
+      assert_file "humo_blog/mix.exs", fn file ->
+        assert file =~ "mod: {HumoBlog.Application, []}"
         assert file =~ "{:jason,"
         assert file =~ "{:phoenix_live_dashboard,"
       end
 
-      assert_file "phx_blog/lib/phx_blog_web.ex", fn file ->
-        assert file =~ "defmodule PhxBlogWeb do"
-        assert file =~ "use Phoenix.View,\n        root: \"lib/phx_blog_web/templates\""
+      assert_file "humo_blog/lib/humo_blog_web.ex", fn file ->
+        assert file =~ "defmodule HumoBlogWeb do"
+        assert file =~ "use Phoenix.View,\n        root: \"lib/humo_blog_web/templates\""
         assert file =~ "use Phoenix.HTML"
         assert file =~ "Phoenix.LiveView"
       end
 
-      assert_file "phx_blog/test/phx_blog_web/controllers/page_controller_test.exs"
-      assert_file "phx_blog/test/phx_blog_web/views/page_view_test.exs"
-      assert_file "phx_blog/test/phx_blog_web/views/error_view_test.exs"
-      assert_file "phx_blog/test/phx_blog_web/views/layout_view_test.exs"
-      assert_file "phx_blog/test/support/conn_case.ex"
-      assert_file "phx_blog/test/test_helper.exs"
+      assert_file "humo_blog/test/humo_blog_web/controllers/page_controller_test.exs"
+      assert_file "humo_blog/test/humo_blog_web/views/page_view_test.exs"
+      assert_file "humo_blog/test/humo_blog_web/views/error_view_test.exs"
+      assert_file "humo_blog/test/humo_blog_web/views/layout_view_test.exs"
+      assert_file "humo_blog/test/support/conn_case.ex"
+      assert_file "humo_blog/test/test_helper.exs"
 
-      assert_file "phx_blog/lib/phx_blog_web/controllers/page_controller.ex",
-                  ~r/defmodule PhxBlogWeb.PageController/
+      assert_file "humo_blog/lib/humo_blog_web/controllers/page_controller.ex",
+                  ~r/defmodule HumoBlogWeb.PageController/
 
-      assert_file "phx_blog/lib/phx_blog_web/views/page_view.ex",
-                  ~r/defmodule PhxBlogWeb.PageView/
+      assert_file "humo_blog/lib/humo_blog_web/views/page_view.ex",
+                  ~r/defmodule HumoBlogWeb.PageView/
 
-      assert_file "phx_blog/lib/phx_blog_web/router.ex", fn file ->
-        assert file =~ "defmodule PhxBlogWeb.Router"
+      assert_file "humo_blog/lib/humo_blog_web/router.ex", fn file ->
+        assert file =~ "defmodule HumoBlogWeb.Router"
         assert file =~ "live_dashboard"
         assert file =~ "import Phoenix.LiveDashboard.Router"
       end
 
-      assert_file "phx_blog/lib/phx_blog_web/endpoint.ex", fn file ->
-        assert file =~ ~s|defmodule PhxBlogWeb.Endpoint|
+      assert_file "humo_blog/lib/humo_blog_web/endpoint.ex", fn file ->
+        assert file =~ ~s|defmodule HumoBlogWeb.Endpoint|
         assert file =~ ~s|socket "/live"|
         assert file =~ ~s|plug Phoenix.LiveDashboard.RequestLogger|
       end
 
-      assert_file "phx_blog/lib/phx_blog_web/templates/layout/root.html.heex", fn file ->
-        assert file =~ ~s|<meta name="csrf-token" content={csrf_token_value()}>|
-      end
+      assert_file "humo_blog/lib/humo_blog_web/templates/layout/root.html.heex"
+      assert_file "humo_blog/lib/humo_blog_web/templates/layout/app.html.heex"
 
-      assert_file "phx_blog/lib/phx_blog_web/templates/layout/app.html.heex"
-
-      assert_file "phx_blog/lib/phx_blog_web/templates/page/index.html.heex", fn file ->
-        version = Application.spec(:phx_new, :vsn) |> to_string() |> Version.parse!()
+      assert_file "humo_blog/lib/humo_blog_web/templates/page/index.html.heex", fn file ->
+        version = Application.spec(:humo_new, :vsn) |> to_string() |> Version.parse!()
         changelog_vsn = "v#{version.major}.#{version.minor}"
         assert file =~
           "https://github.com/phoenixframework/phoenix/blob/#{changelog_vsn}/CHANGELOG.md"
       end
 
       # assets
-      assert_file "phx_blog/.gitignore", fn file ->
+      assert_file "humo_blog/.gitignore", fn file ->
         assert file =~ "/priv/static/assets/"
-        assert file =~ "phx_blog-*.tar"
+        assert file =~ "humo_blog-*.tar"
         assert file =~ ~r/\n$/
       end
 
-      assert_file "phx_blog/config/dev.exs", fn file ->
+      assert_file "humo_blog/config/dev.exs", fn file ->
         assert file =~ "esbuild: {Esbuild,"
-        assert file =~ "lib/phx_blog_web/(live|views)/.*(ex)"
-        assert file =~ "lib/phx_blog_web/templates/.*(eex)"
+        assert file =~ "lib/humo_blog_web/(live|views)/.*(ex)"
+        assert file =~ "lib/humo_blog_web/templates/.*(eex)"
       end
 
-      assert_file "phx_blog/assets/css/app.css"
-      assert_file "phx_blog/assets/css/phoenix.css"
+      assert_file "humo_blog/assets/css/app.css"
+      assert_file "humo_blog/assets/css/phoenix.css"
 
-      refute File.exists? "phx_blog/priv/static/assets/app.css"
-      refute File.exists? "phx_blog/priv/static/assets/phoenix.css"
-      refute File.exists? "phx_blog/priv/static/assets/app.js"
-      assert File.exists? "phx_blog/assets/vendor"
+      refute File.exists? "humo_blog/priv/static/assets/app.css"
+      refute File.exists? "humo_blog/priv/static/assets/phoenix.css"
+      refute File.exists? "humo_blog/priv/static/assets/app.js"
+      assert File.exists? "humo_blog/assets/vendor"
 
-      assert_file "phx_blog/config/config.exs", fn file ->
+      assert_file "humo_blog/config/config.exs", fn file ->
         assert file =~ "cd: Path.expand(\"../assets\", __DIR__)"
         assert file =~ "config :esbuild"
       end
 
       # Ecto
-      config = ~r/config :phx_blog, PhxBlog.Repo,/
-      assert_file "phx_blog/mix.exs", fn file ->
+      config = ~r/config :humo_blog, HumoBlog.Repo,/
+      assert_file "humo_blog/mix.exs", fn file ->
         assert file =~ "{:phoenix_ecto,"
         assert file =~ "aliases: aliases()"
         assert file =~ "ecto.setup"
         assert file =~ "ecto.reset"
       end
-      assert_file "phx_blog/config/dev.exs", config
-      assert_file "phx_blog/config/test.exs", config
-      assert_file "phx_blog/config/runtime.exs", fn file ->
+      assert_file "humo_blog/config/dev.exs", config
+      assert_file "humo_blog/config/test.exs", config
+      assert_file "humo_blog/config/runtime.exs", fn file ->
         assert file =~ config
         assert file =~ ~S|maybe_ipv6 = if System.get_env("ECTO_IPV6"), do: [:inet6], else: []|
         assert file =~ ~S|socket_options: maybe_ipv6|
         assert file =~ """
         if System.get_env("PHX_SERVER") do
-          config :phx_blog, PhxBlogWeb.Endpoint, server: true
+          config :humo_blog, HumoBlogWeb.Endpoint, server: true
         end
         """
         assert file =~ ~S[host = System.get_env("PHX_HOST") || "example.com"]
         assert file =~ ~S|url: [host: host, port: 443, scheme: "https"],|
       end
-      assert_file "phx_blog/config/test.exs", ~R/database: "phx_blog_test#\{System.get_env\("MIX_TEST_PARTITION"\)\}"/
-      assert_file "phx_blog/lib/phx_blog/repo.ex", ~r"defmodule PhxBlog.Repo"
-      assert_file "phx_blog/lib/phx_blog_web.ex", ~r"defmodule PhxBlogWeb"
-      assert_file "phx_blog/lib/phx_blog_web/endpoint.ex", ~r"plug Phoenix.Ecto.CheckRepoStatus, otp_app: :phx_blog"
-      assert_file "phx_blog/priv/repo/seeds.exs", ~r"PhxBlog.Repo.insert!"
-      assert_file "phx_blog/test/support/data_case.ex", ~r"defmodule PhxBlog.DataCase"
-      assert_file "phx_blog/priv/repo/migrations/.formatter.exs", ~r"import_deps: \[:ecto_sql\]"
+      assert_file "humo_blog/config/test.exs", ~R/database: "humo_blog_test#\{System.get_env\("MIX_TEST_PARTITION"\)\}"/
+      assert_file "humo_blog/lib/humo_blog/repo.ex", ~r"defmodule HumoBlog.Repo"
+      assert_file "humo_blog/lib/humo_blog_web.ex", ~r"defmodule HumoBlogWeb"
+      assert_file "humo_blog/lib/humo_blog_web/endpoint.ex", ~r"plug Phoenix.Ecto.CheckRepoStatus, otp_app: :humo_blog"
+      assert_file "humo_blog/priv/repo/seeds.exs", ~r"HumoBlog.Repo.insert!"
+      assert_file "humo_blog/test/support/data_case.ex", ~r"defmodule HumoBlog.DataCase"
+      assert_file "humo_blog/priv/repo/migrations/.formatter.exs", ~r"import_deps: \[:ecto_sql\]"
 
       # LiveView
-      refute_file "phx_blog/lib/phx_blog_web/live/page_live_view.ex"
+      refute_file "humo_blog/lib/humo_blog_web/live/page_live_view.ex"
 
-      assert_file "phx_blog/assets/js/app.js", fn file ->
+      assert_file "humo_blog/assets/js/app.js", fn file ->
         assert file =~ ~s|import {LiveSocket} from "phoenix_live_view"|
         assert file =~ ~s|liveSocket.connect()|
       end
 
-      assert_file "phx_blog/mix.exs", fn file ->
+      assert_file "humo_blog/mix.exs", fn file ->
         assert file =~ ~r":phoenix_live_view"
         assert file =~ ~r":floki"
       end
 
-      assert_file "phx_blog/lib/phx_blog_web/router.ex", &assert(&1 =~ ~s[plug :fetch_live_flash])
-      assert_file "phx_blog/lib/phx_blog_web/router.ex", &assert(&1 =~ ~s[plug :put_root_layout])
-      assert_file "phx_blog/lib/phx_blog_web/router.ex", &assert(&1 =~ ~s[PageController])
+      assert_file "humo_blog/lib/humo_blog_web/router.ex", &assert(&1 =~ ~s[plug :fetch_live_flash])
+      assert_file "humo_blog/lib/humo_blog_web/router.ex", &assert(&1 =~ ~s[plug :put_root_layout])
+      assert_file "humo_blog/lib/humo_blog_web/router.ex", &assert(&1 =~ ~s[PageController])
 
       # Telemetry
-      assert_file "phx_blog/mix.exs", fn file ->
+      assert_file "humo_blog/mix.exs", fn file ->
         assert file =~ "{:telemetry_metrics,"
         assert file =~ "{:telemetry_poller,"
       end
 
-      assert_file "phx_blog/lib/phx_blog_web/telemetry.ex", fn file ->
-        assert file =~ "defmodule PhxBlogWeb.Telemetry do"
+      assert_file "humo_blog/lib/humo_blog_web/telemetry.ex", fn file ->
+        assert file =~ "defmodule HumoBlogWeb.Telemetry do"
         assert file =~ "{:telemetry_poller, measurements: periodic_measurements()"
         assert file =~ "defp periodic_measurements do"
-        assert file =~ "# {PhxBlogWeb, :count_users, []}"
+        assert file =~ "# {HumoBlogWeb, :count_users, []}"
         assert file =~ "def metrics do"
         assert file =~ "summary(\"phoenix.endpoint.stop.duration\","
         assert file =~ "summary(\"phoenix.router_dispatch.stop.duration\","
         assert file =~ "# Database Metrics"
-        assert file =~ "summary(\"phx_blog.repo.query.total_time\","
+        assert file =~ "summary(\"humo_blog.repo.query.total_time\","
       end
 
       # Mailer
-      assert_file "phx_blog/mix.exs", fn file ->
+      assert_file "humo_blog/mix.exs", fn file ->
         assert file =~ "{:swoosh, \"~> 1.3\"}"
       end
 
-      assert_file "phx_blog/lib/phx_blog/mailer.ex", fn file ->
-        assert file =~ "defmodule PhxBlog.Mailer do"
-        assert file =~ "use Swoosh.Mailer, otp_app: :phx_blog"
+      assert_file "humo_blog/lib/humo_blog/mailer.ex", fn file ->
+        assert file =~ "defmodule HumoBlog.Mailer do"
+        assert file =~ "use Swoosh.Mailer, otp_app: :humo_blog"
       end
 
-      assert_file "phx_blog/config/config.exs", fn file ->
+      assert_file "humo_blog/config/config.exs", fn file ->
         assert file =~ "config :swoosh"
-        assert file =~ "config :phx_blog, PhxBlog.Mailer, adapter: Swoosh.Adapters.Local"
+        assert file =~ "config :humo_blog, HumoBlog.Mailer, adapter: Swoosh.Adapters.Local"
       end
 
-      assert_file "phx_blog/config/test.exs", fn file ->
-        assert file =~ "config :phx_blog, PhxBlog.Mailer, adapter: Swoosh.Adapters.Test"
+      assert_file "humo_blog/config/test.exs", fn file ->
+        assert file =~ "config :humo_blog, HumoBlog.Mailer, adapter: Swoosh.Adapters.Test"
       end
 
       # Install dependencies?
@@ -235,146 +225,146 @@ defmodule Mix.Tasks.Phx.NewTest do
 
       # Instructions
       assert_received {:mix_shell, :info, ["\nWe are almost there" <> _ = msg]}
-      assert msg =~ "$ cd phx_blog"
+      assert msg =~ "$ cd humo_blog"
       assert msg =~ "$ mix deps.get"
 
       assert_received {:mix_shell, :info, ["Then configure your database in config/dev.exs" <> _]}
       assert_received {:mix_shell, :info, ["Start your Phoenix app" <> _]}
 
       # Gettext
-      assert_file "phx_blog/lib/phx_blog_web/gettext.ex", ~r"defmodule PhxBlogWeb.Gettext"
-      assert File.exists?("phx_blog/priv/gettext/errors.pot")
-      assert File.exists?("phx_blog/priv/gettext/en/LC_MESSAGES/errors.po")
+      assert_file "humo_blog/lib/humo_blog_web/gettext.ex", ~r"defmodule HumoBlogWeb.Gettext"
+      assert File.exists?("humo_blog/priv/gettext/errors.pot")
+      assert File.exists?("humo_blog/priv/gettext/en/LC_MESSAGES/errors.po")
     end
   end
 
   test "new without defaults" do
     in_tmp "new without defaults", fn ->
-      Mix.Tasks.Phx.New.run([@app_name, "--no-html", "--no-assets", "--no-ecto", "--no-gettext", "--no-dashboard", "--no-mailer"])
+      Mix.Tasks.Humo.New.run([@app_name, "--no-html", "--no-assets", "--no-ecto", "--no-gettext", "--no-dashboard", "--no-mailer"])
 
       # No assets
-      assert_file "phx_blog/.gitignore", fn file ->
+      assert_file "humo_blog/.gitignore", fn file ->
         refute file =~ "/priv/static/assets/"
         assert file =~ ~r/\n$/
       end
 
-      assert_file "phx_blog/config/dev.exs", ~r/watchers: \[\]/
+      assert_file "humo_blog/config/dev.exs", ~r/watchers: \[\]/
 
       # No assets & No HTML
-      refute_file "phx_blog/priv/static/assets/app.css"
-      refute_file "phx_blog/priv/static/assets/phoenix.css"
-      refute_file "phx_blog/priv/static/favicon.ico"
-      refute_file "phx_blog/priv/static/images/phoenix.png"
-      refute_file "phx_blog/priv/static/assets/app.js"
+      refute_file "humo_blog/priv/static/assets/app.css"
+      refute_file "humo_blog/priv/static/assets/phoenix.css"
+      refute_file "humo_blog/priv/static/favicon.ico"
+      refute_file "humo_blog/priv/static/images/phoenix.png"
+      refute_file "humo_blog/priv/static/assets/app.js"
 
       # No Ecto
-      config = ~r/config :phx_blog, PhxBlog.Repo,/
-      refute File.exists?("phx_blog/lib/phx_blog/repo.ex")
-      assert_file "phx_blog/lib/phx_blog_web/endpoint.ex", fn file ->
-        refute file =~ "plug Phoenix.Ecto.CheckRepoStatus, otp_app: :phx_blog"
+      config = ~r/config :humo_blog, HumoBlog.Repo,/
+      refute File.exists?("humo_blog/lib/humo_blog/repo.ex")
+      assert_file "humo_blog/lib/humo_blog_web/endpoint.ex", fn file ->
+        refute file =~ "plug Phoenix.Ecto.CheckRepoStatus, otp_app: :humo_blog"
       end
 
-      assert_file "phx_blog/lib/phx_blog_web/telemetry.ex", fn file ->
+      assert_file "humo_blog/lib/humo_blog_web/telemetry.ex", fn file ->
         refute file =~ "# Database Metrics"
-        refute file =~ "summary(\"phx_blog.repo.query.total_time\","
+        refute file =~ "summary(\"humo_blog.repo.query.total_time\","
       end
 
-      assert_file "phx_blog/.formatter.exs", fn file ->
+      assert_file "humo_blog/.formatter.exs", fn file ->
         assert file =~ "import_deps: [:phoenix]"
         assert file =~ "inputs: [\"*.{ex,exs}\", \"{config,lib,test}/**/*.{ex,exs}\"]"
         refute file =~ "subdirectories:"
       end
 
-      assert_file "phx_blog/mix.exs", &refute(&1 =~ ~r":phoenix_ecto")
+      assert_file "humo_blog/mix.exs", &refute(&1 =~ ~r":phoenix_ecto")
 
-      assert_file "phx_blog/config/config.exs", fn file ->
+      assert_file "humo_blog/config/config.exs", fn file ->
         refute file =~ "config :esbuild"
-        refute file =~ "config :phx_blog, :generators"
+        refute file =~ "config :humo_blog, :generators"
         refute file =~ "ecto_repos:"
       end
 
-      assert_file "phx_blog/config/dev.exs", fn file ->
+      assert_file "humo_blog/config/dev.exs", fn file ->
         refute file =~ config
         assert file =~ "config :phoenix, :plug_init_mode, :runtime"
       end
 
-      assert_file "phx_blog/config/test.exs", &refute(&1 =~ config)
-      assert_file "phx_blog/config/runtime.exs", &refute(&1 =~ config)
-      assert_file "phx_blog/lib/phx_blog_web.ex", &refute(&1 =~ ~r"alias PhxBlog.Repo")
+      assert_file "humo_blog/config/test.exs", &refute(&1 =~ config)
+      assert_file "humo_blog/config/runtime.exs", &refute(&1 =~ config)
+      assert_file "humo_blog/lib/humo_blog_web.ex", &refute(&1 =~ ~r"alias HumoBlog.Repo")
 
       # No gettext
-      refute_file "phx_blog/lib/phx_blog_web/gettext.ex"
-      refute_file "phx_blog/priv/gettext/en/LC_MESSAGES/errors.po"
-      refute_file "phx_blog/priv/gettext/errors.pot"
-      assert_file "phx_blog/mix.exs", &refute(&1 =~ ~r":gettext")
-      assert_file "phx_blog/lib/phx_blog_web.ex", &refute(&1 =~ ~r"import AmsMockWeb.Gettext")
-      assert_file "phx_blog/lib/phx_blog_web/views/error_helpers.ex", &refute(&1 =~ ~r"gettext")
-      assert_file "phx_blog/config/dev.exs", &refute(&1 =~ ~r"gettext")
+      refute_file "humo_blog/lib/humo_blog_web/gettext.ex"
+      refute_file "humo_blog/priv/gettext/en/LC_MESSAGES/errors.po"
+      refute_file "humo_blog/priv/gettext/errors.pot"
+      assert_file "humo_blog/mix.exs", &refute(&1 =~ ~r":gettext")
+      assert_file "humo_blog/lib/humo_blog_web.ex", &refute(&1 =~ ~r"import AmsMockWeb.Gettext")
+      assert_file "humo_blog/lib/humo_blog_web/views/error_helpers.ex", &refute(&1 =~ ~r"gettext")
+      assert_file "humo_blog/config/dev.exs", &refute(&1 =~ ~r"gettext")
 
       # No HTML
-      assert File.exists?("phx_blog/test/phx_blog_web/controllers")
+      assert File.exists?("humo_blog/test/humo_blog_web/controllers")
 
-      assert File.exists?("phx_blog/lib/phx_blog_web/controllers")
-      assert File.exists?("phx_blog/lib/phx_blog_web/views")
+      assert File.exists?("humo_blog/lib/humo_blog_web/controllers")
+      assert File.exists?("humo_blog/lib/humo_blog_web/views")
 
-      refute File.exists? "phx_blog/test/web/controllers/pager_controller_test.exs"
-      refute File.exists? "phx_blog/test/views/layout_view_test.exs"
-      refute File.exists? "phx_blog/test/views/page_view_test.exs"
-      refute File.exists? "phx_blog/lib/phx_blog_web/controllers/page_controller.ex"
-      refute File.exists? "phx_blog/lib/phx_blog_web/templates/layout/app.html.heex"
-      refute File.exists? "phx_blog/lib/phx_blog_web/templates/page/index.html.heex"
-      refute File.exists? "phx_blog/lib/phx_blog_web/views/layout_view.ex"
-      refute File.exists? "phx_blog/lib/phx_blog_web/views/page_view.ex"
+      refute File.exists? "humo_blog/test/web/controllers/pager_controller_test.exs"
+      refute File.exists? "humo_blog/test/views/layout_view_test.exs"
+      refute File.exists? "humo_blog/test/views/page_view_test.exs"
+      refute File.exists? "humo_blog/lib/humo_blog_web/controllers/page_controller.ex"
+      refute File.exists? "humo_blog/lib/humo_blog_web/templates/layout/app.html.heex"
+      refute File.exists? "humo_blog/lib/humo_blog_web/templates/page/index.html.heex"
+      refute File.exists? "humo_blog/lib/humo_blog_web/views/layout_view.ex"
+      refute File.exists? "humo_blog/lib/humo_blog_web/views/page_view.ex"
 
-      assert_file "phx_blog/mix.exs", &refute(&1 =~ ~r":phoenix_html")
-      assert_file "phx_blog/mix.exs", &refute(&1 =~ ~r":phoenix_live_reload")
+      assert_file "humo_blog/mix.exs", &refute(&1 =~ ~r":phoenix_html")
+      assert_file "humo_blog/mix.exs", &refute(&1 =~ ~r":phoenix_live_reload")
 
-      assert_file "phx_blog/lib/phx_blog_web.ex", fn file ->
+      assert_file "humo_blog/lib/humo_blog_web.ex", fn file ->
         assert file =~ "defp view_helpers do"
         refute file =~ "Phoenix.HTML"
         refute file =~ "Phoenix.LiveView"
       end
 
-      assert_file "phx_blog/lib/phx_blog_web/endpoint.ex", fn file ->
+      assert_file "humo_blog/lib/humo_blog_web/endpoint.ex", fn file ->
         refute file =~ ~r"Phoenix.LiveReloader"
         refute file =~ ~r"Phoenix.LiveReloader.Socket"
       end
 
-      assert_file "phx_blog/lib/phx_blog_web/views/error_view.ex", ~r".json"
-      assert_file "phx_blog/lib/phx_blog_web/router.ex", &refute(&1 =~ ~r"pipeline :browser")
+      assert_file "humo_blog/lib/humo_blog_web/views/error_view.ex", ~r".json"
+      assert_file "humo_blog/lib/humo_blog_web/router.ex", &refute(&1 =~ ~r"pipeline :browser")
 
       # No Dashboard
-      assert_file "phx_blog/lib/phx_blog_web/endpoint.ex", fn file ->
+      assert_file "humo_blog/lib/humo_blog_web/endpoint.ex", fn file ->
         refute file =~ ~s|plug Phoenix.LiveDashboard.RequestLogger|
       end
 
-      assert_file "phx_blog/lib/phx_blog_web/router.ex", fn file ->
+      assert_file "humo_blog/lib/humo_blog_web/router.ex", fn file ->
         refute file =~ "live_dashboard"
         refute file =~ "import Phoenix.LiveDashboard.Router"
       end
 
       # No mailer or emails
-      refute File.exists? "phx_blog/lib/phx_blog/mailer.ex"
+      refute File.exists? "humo_blog/lib/humo_blog/mailer.ex"
 
-      assert_file "phx_blog/config/config.exs", fn file ->
+      assert_file "humo_blog/config/config.exs", fn file ->
         refute file =~ "config :swoosh"
-        refute file =~ "config :phx_blog, PhxBlog.Mailer, adapter: Swoosh.Adapters.Local"
+        refute file =~ "config :humo_blog, HumoBlog.Mailer, adapter: Swoosh.Adapters.Local"
       end
     end
   end
 
   test "new with --no-dashboard" do
     in_tmp "new with no_dashboard", fn ->
-      Mix.Tasks.Phx.New.run([@app_name, "--no-dashboard"])
+      Mix.Tasks.Humo.New.run([@app_name, "--no-dashboard"])
 
-      assert_file "phx_blog/mix.exs", &refute(&1 =~ ~r":phoenix_live_dashboard")
+      assert_file "humo_blog/mix.exs", &refute(&1 =~ ~r":phoenix_live_dashboard")
 
-      assert_file "phx_blog/lib/phx_blog_web/templates/layout/app.html.heex", fn file ->
+      assert_file "humo_blog/lib/humo_blog_web/templates/layout/app.html.heex", fn file ->
         refute file =~ ~s|<%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home)|
       end
 
-      assert_file "phx_blog/lib/phx_blog_web/endpoint.ex", fn file ->
-        assert file =~ ~s|defmodule PhxBlogWeb.Endpoint|
+      assert_file "humo_blog/lib/humo_blog_web/endpoint.ex", fn file ->
+        assert file =~ ~s|defmodule HumoBlogWeb.Endpoint|
         assert file =~ ~s|  socket "/live"|
         refute file =~ ~s|plug Phoenix.LiveDashboard.RequestLogger|
       end
@@ -383,10 +373,10 @@ defmodule Mix.Tasks.Phx.NewTest do
 
   test "new with --no-dashboard and --no-live" do
     in_tmp "new with no_dashboard and no_live", fn ->
-      Mix.Tasks.Phx.New.run([@app_name, "--no-dashboard", "--no-live"])
+      Mix.Tasks.Humo.New.run([@app_name, "--no-dashboard", "--no-live"])
 
-      assert_file "phx_blog/lib/phx_blog_web/endpoint.ex", fn file ->
-        assert file =~ ~s|defmodule PhxBlogWeb.Endpoint|
+      assert_file "humo_blog/lib/humo_blog_web/endpoint.ex", fn file ->
+        assert file =~ ~s|defmodule HumoBlogWeb.Endpoint|
         assert file =~ ~s|# socket "/live"|
         refute file =~ ~s|plug Phoenix.LiveDashboard.RequestLogger|
       end
@@ -395,33 +385,33 @@ defmodule Mix.Tasks.Phx.NewTest do
 
   test "new with --no-html" do
     in_tmp "new with no_html", fn ->
-      Mix.Tasks.Phx.New.run([@app_name, "--no-html"])
+      Mix.Tasks.Humo.New.run([@app_name, "--no-html"])
 
-      assert_file "phx_blog/mix.exs", fn file ->
+      assert_file "humo_blog/mix.exs", fn file ->
         refute file =~ ~s|:phoenix_live_view|
         refute file =~ ~s|:phoenix_html|
         assert file =~ ~s|:phoenix_live_dashboard|
       end
 
-      assert_file "phx_blog/.formatter.exs", fn file ->
+      assert_file "humo_blog/.formatter.exs", fn file ->
         assert file =~ "import_deps: [:ecto, :phoenix]"
         assert file =~ "subdirectories: [\"priv/*/migrations\"]"
         assert file =~ "inputs: [\"*.{ex,exs}\", \"{config,lib,test}/**/*.{ex,exs}\", \"priv/*/seeds.exs\"]"
         refute file =~ "plugins:"
       end
 
-      assert_file "phx_blog/lib/phx_blog_web/endpoint.ex", fn file ->
-        assert file =~ ~s|defmodule PhxBlogWeb.Endpoint|
+      assert_file "humo_blog/lib/humo_blog_web/endpoint.ex", fn file ->
+        assert file =~ ~s|defmodule HumoBlogWeb.Endpoint|
         assert file =~ ~s|socket "/live"|
         assert file =~ ~s|plug Phoenix.LiveDashboard.RequestLogger|
       end
 
-      assert_file "phx_blog/lib/phx_blog_web.ex", fn file ->
+      assert_file "humo_blog/lib/humo_blog_web.ex", fn file ->
         refute file =~ ~s|Phoenix.HTML|
         refute file =~ ~s|Phoenix.LiveView|
       end
 
-      assert_file "phx_blog/lib/phx_blog_web/router.ex", fn file ->
+      assert_file "humo_blog/lib/humo_blog_web/router.ex", fn file ->
         refute file =~ ~s|pipeline :browser|
         assert file =~ ~s|pipe_through [:fetch_session, :protect_from_forgery]|
       end
@@ -430,21 +420,21 @@ defmodule Mix.Tasks.Phx.NewTest do
 
   test "new with --no-assets" do
     in_tmp "new no_assets", fn ->
-      Mix.Tasks.Phx.New.run([@app_name, "--no-assets"])
+      Mix.Tasks.Humo.New.run([@app_name, "--no-assets"])
 
-      assert_file "phx_blog/.gitignore", fn file ->
+      assert_file "humo_blog/.gitignore", fn file ->
         refute file =~ "/priv/static/assets/"
       end
 
-      assert_file "phx_blog/.gitignore"
-      assert_file "phx_blog/.gitignore", ~r/\n$/
-      assert_file "phx_blog/priv/static/assets/app.css"
-      assert_file "phx_blog/priv/static/assets/phoenix.css"
-      assert_file "phx_blog/priv/static/assets/app.js"
-      assert_file "phx_blog/priv/static/favicon.ico"
-      assert_file "phx_blog/priv/static/images/phoenix.png"
+      assert_file "humo_blog/.gitignore"
+      assert_file "humo_blog/.gitignore", ~r/\n$/
+      assert_file "humo_blog/priv/static/assets/app.css"
+      assert_file "humo_blog/priv/static/assets/phoenix.css"
+      assert_file "humo_blog/priv/static/assets/app.js"
+      assert_file "humo_blog/priv/static/favicon.ico"
+      assert_file "humo_blog/priv/static/images/phoenix.png"
 
-      assert_file "phx_blog/config/config.exs", fn file ->
+      assert_file "humo_blog/config/config.exs", fn file ->
         refute file =~ "config :esbuild"
       end
     end
@@ -452,10 +442,10 @@ defmodule Mix.Tasks.Phx.NewTest do
 
   test "new with --no-ecto" do
     in_tmp "new with no_ecto", fn ->
-      Mix.Tasks.Phx.New.run([@app_name, "--no-ecto"])
+      Mix.Tasks.Humo.New.run([@app_name, "--no-ecto"])
 
       if Version.match?(System.version(), ">= 1.13.4") do
-        assert_file "phx_blog/.formatter.exs", fn file ->
+        assert_file "humo_blog/.formatter.exs", fn file ->
           assert file =~ "import_deps: [:phoenix]"
           assert file =~ "plugins: [Phoenix.LiveView.HTMLFormatter]"
           assert file =~ "inputs: [\"*.{heex,ex,exs}\", \"{config,lib,test}/**/*.{heex,ex,exs}\"]"
@@ -467,24 +457,24 @@ defmodule Mix.Tasks.Phx.NewTest do
 
   test "new with binary_id" do
     in_tmp "new with binary_id", fn ->
-      Mix.Tasks.Phx.New.run([@app_name, "--binary-id"])
-      assert_file "phx_blog/config/config.exs", ~r/generators: \[binary_id: true\]/
+      Mix.Tasks.Humo.New.run([@app_name, "--binary-id"])
+      assert_file "humo_blog/config/config.exs", ~r/generators: \[binary_id: true\]/
     end
   end
 
   test "new with uppercase" do
     in_tmp "new with uppercase", fn ->
-      Mix.Tasks.Phx.New.run(["phxBlog"])
+      Mix.Tasks.Humo.New.run(["humoBlog"])
 
-      assert_file "phxBlog/README.md"
+      assert_file "humoBlog/README.md"
 
-      assert_file "phxBlog/mix.exs", fn file ->
-        assert file =~ "app: :phxBlog"
+      assert_file "humoBlog/mix.exs", fn file ->
+        assert file =~ "app: :humoBlog"
       end
 
-      assert_file "phxBlog/config/dev.exs", fn file ->
-        assert file =~ ~r/config :phxBlog, PhxBlog.Repo,/
-        assert file =~ "database: \"phxblog_dev\""
+      assert_file "humoBlog/config/dev.exs", fn file ->
+        assert file =~ ~r/config :humoBlog, HumoBlog.Repo,/
+        assert file =~ "database: \"humoblog_dev\""
       end
     end
   end
@@ -492,14 +482,14 @@ defmodule Mix.Tasks.Phx.NewTest do
   test "new with path, app and module" do
     in_tmp "new with path, app and module", fn ->
       project_path = Path.join(File.cwd!(), "custom_path")
-      Mix.Tasks.Phx.New.run([project_path, "--app", @app_name, "--module", "PhoteuxBlog"])
+      Mix.Tasks.Humo.New.run([project_path, "--app", @app_name, "--module", "PhoteuxBlog"])
 
       assert_file "custom_path/.gitignore"
       assert_file "custom_path/.gitignore", ~r/\n$/
-      assert_file "custom_path/mix.exs", ~r/app: :phx_blog/
-      assert_file "custom_path/lib/phx_blog_web/endpoint.ex", ~r/app: :phx_blog/
+      assert_file "custom_path/mix.exs", ~r/app: :humo_blog/
+      assert_file "custom_path/lib/humo_blog_web/endpoint.ex", ~r/app: :humo_blog/
       assert_file "custom_path/config/config.exs", ~r/namespace: PhoteuxBlog/
-      assert_file "custom_path/lib/phx_blog_web.ex", ~r/use Phoenix.Controller, namespace: PhoteuxBlogWeb/
+      assert_file "custom_path/lib/humo_blog_web.ex", ~r/use Phoenix.Controller, namespace: PhoteuxBlogWeb/
     end
   end
 
@@ -508,9 +498,9 @@ defmodule Mix.Tasks.Phx.NewTest do
       File.write! "mix.exs", MixHelper.umbrella_mixfile_contents()
       File.mkdir! "apps"
       File.cd! "apps", fn ->
-        Mix.Tasks.Phx.New.run([@app_name])
+        Mix.Tasks.Humo.New.run([@app_name])
 
-        assert_file "phx_blog/mix.exs", fn file ->
+        assert_file "humo_blog/mix.exs", fn file ->
           assert file =~ "deps_path: \"../../deps\""
           assert file =~ "lockfile: \"../../mix.lock\""
         end
@@ -520,14 +510,14 @@ defmodule Mix.Tasks.Phx.NewTest do
 
   test "new with --no-install" do
     in_tmp "new with no install", fn ->
-      Mix.Tasks.Phx.New.run([@app_name, "--no-install"])
+      Mix.Tasks.Humo.New.run([@app_name, "--no-install"])
 
       # Does not prompt to install dependencies
       refute_received {:mix_shell, :yes?, ["\nFetch and install dependencies?"]}
 
       # Instructions
       assert_received {:mix_shell, :info, ["\nWe are almost there" <> _ = msg]}
-      assert msg =~ "$ cd phx_blog"
+      assert msg =~ "$ cd humo_blog"
       assert msg =~ "$ mix deps.get"
 
       assert_received {:mix_shell, :info, ["Then configure your database in config/dev.exs" <> _]}
@@ -538,7 +528,7 @@ defmodule Mix.Tasks.Phx.NewTest do
   test "new defaults to pg adapter" do
     in_tmp "new defaults to pg adapter", fn ->
       project_path = Path.join(File.cwd!(), "custom_path")
-      Mix.Tasks.Phx.New.run([project_path])
+      Mix.Tasks.Humo.New.run([project_path])
 
       assert_file "custom_path/mix.exs", ":postgrex"
       assert_file "custom_path/config/dev.exs", [~r/username: "postgres"/, ~r/password: "postgres"/, ~r/hostname: "localhost"/]
@@ -554,7 +544,7 @@ defmodule Mix.Tasks.Phx.NewTest do
   test "new with mysql adapter" do
     in_tmp "new with mysql adapter", fn ->
       project_path = Path.join(File.cwd!(), "custom_path")
-      Mix.Tasks.Phx.New.run([project_path, "--database", "mysql"])
+      Mix.Tasks.Humo.New.run([project_path, "--database", "mysql"])
 
       assert_file "custom_path/mix.exs", ":myxql"
       assert_file "custom_path/config/dev.exs", [~r/username: "root"/, ~r/password: ""/]
@@ -570,7 +560,7 @@ defmodule Mix.Tasks.Phx.NewTest do
   test "new with sqlite3 adapter" do
     in_tmp "new with sqlite3 adapter", fn ->
       project_path = Path.join(File.cwd!(), "custom_path")
-      Mix.Tasks.Phx.New.run([project_path, "--database", "sqlite3"])
+      Mix.Tasks.Humo.New.run([project_path, "--database", "sqlite3"])
 
       assert_file "custom_path/mix.exs", ":ecto_sqlite3"
       assert_file "custom_path/config/dev.exs", [~r/database: .*_dev.db/]
@@ -589,7 +579,7 @@ defmodule Mix.Tasks.Phx.NewTest do
   test "new with mssql adapter" do
     in_tmp "new with mssql adapter", fn ->
       project_path = Path.join(File.cwd!(), "custom_path")
-      Mix.Tasks.Phx.New.run([project_path, "--database", "mssql"])
+      Mix.Tasks.Humo.New.run([project_path, "--database", "mssql"])
 
       assert_file "custom_path/mix.exs", ":tds"
       assert_file "custom_path/config/dev.exs", [~r/username: "sa"/, ~r/password: "some!Password"/]
@@ -606,46 +596,46 @@ defmodule Mix.Tasks.Phx.NewTest do
     in_tmp "new with invalid database adapter", fn ->
       project_path = Path.join(File.cwd!(), "custom_path")
       assert_raise Mix.Error, ~s(Unknown database "invalid"), fn ->
-        Mix.Tasks.Phx.New.run([project_path, "--database", "invalid"])
+        Mix.Tasks.Humo.New.run([project_path, "--database", "invalid"])
       end
     end
   end
 
   test "new with invalid args" do
     assert_raise Mix.Error, ~r"Application name must start with a letter and ", fn ->
-      Mix.Tasks.Phx.New.run ["007invalid"]
+      Mix.Tasks.Humo.New.run ["007invalid"]
     end
 
     assert_raise Mix.Error, ~r"Application name must start with a letter and ", fn ->
-      Mix.Tasks.Phx.New.run ["valid", "--app", "007invalid"]
+      Mix.Tasks.Humo.New.run ["valid", "--app", "007invalid"]
     end
 
     assert_raise Mix.Error, ~r"Module name must be a valid Elixir alias", fn ->
-      Mix.Tasks.Phx.New.run ["valid", "--module", "not.valid"]
+      Mix.Tasks.Humo.New.run ["valid", "--module", "not.valid"]
     end
 
     assert_raise Mix.Error, ~r"Module name \w+ is already taken", fn ->
-      Mix.Tasks.Phx.New.run ["string"]
+      Mix.Tasks.Humo.New.run ["string"]
     end
 
     assert_raise Mix.Error, ~r"Module name \w+ is already taken", fn ->
-      Mix.Tasks.Phx.New.run ["valid", "--app", "mix"]
+      Mix.Tasks.Humo.New.run ["valid", "--app", "mix"]
     end
 
     assert_raise Mix.Error, ~r"Module name \w+ is already taken", fn ->
-      Mix.Tasks.Phx.New.run ["valid", "--module", "String"]
+      Mix.Tasks.Humo.New.run ["valid", "--module", "String"]
     end
   end
 
   test "invalid options" do
     assert_raise Mix.Error, ~r/Invalid option: -d/, fn ->
-      Mix.Tasks.Phx.New.run(["valid", "-database", "mysql"])
+      Mix.Tasks.Humo.New.run(["valid", "-database", "mysql"])
     end
   end
 
   test "new without args" do
     in_tmp "new without args", fn ->
-      assert capture_io(fn -> Mix.Tasks.Phx.New.run([]) end) =~
+      assert capture_io(fn -> Mix.Tasks.Humo.New.run([]) end) =~
              "Creates a new Phoenix project."
     end
   end

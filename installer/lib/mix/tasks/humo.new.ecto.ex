@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Phx.New.Ecto do
+defmodule Mix.Tasks.Humo.New.Ecto do
   @moduledoc """
   Creates a new Ecto project within an umbrella project.
 
@@ -10,7 +10,7 @@ defmodule Mix.Tasks.Phx.New.Ecto do
   It expects the name of the project as an argument.
 
       $ cd my_umbrella/apps
-      $ mix phx.new.ecto APP [--module MODULE] [--app APP]
+      $ mix humo.new.ecto APP [--module MODULE] [--app APP]
 
   A project at the given APP directory will be created. The
   application name and module name will be retrieved
@@ -38,21 +38,21 @@ defmodule Mix.Tasks.Phx.New.Ecto do
 
   ## Examples
 
-      $ mix phx.new.ecto hello_ecto
+      $ mix humo.new.ecto hello_ecto
 
   Is equivalent to:
 
-      $ mix phx.new.ecto hello_ecto --module HelloEcto
+      $ mix humo.new.ecto hello_ecto --module HelloEcto
   """
 
   @shortdoc "Creates a new Ecto project within an umbrella project"
 
   use Mix.Task
-  import Phx.New.Generator
+  import HumoNew.Generator
 
   @impl true
   def run([]) do
-    Mix.Tasks.Help.run(["phx.new.ecto"])
+    Mix.Tasks.Help.run(["humo.new.ecto"])
   end
 
   def run([path | _] = args) do
@@ -60,6 +60,6 @@ defmodule Mix.Tasks.Phx.New.Ecto do
       Mix.raise "The ecto task can only be run within an umbrella's apps directory"
     end
 
-    Mix.Tasks.Phx.New.run(args ++ ["--no-assets", "--ecto"], Phx.New.Ecto, :app_path)
+    Mix.Tasks.Humo.New.run(args ++ ["--no-assets", "--ecto"], HumoNew.Ecto, :app_path)
   end
 end

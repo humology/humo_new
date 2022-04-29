@@ -1,10 +1,10 @@
-defmodule Mix.Tasks.Phx.New do
+defmodule Mix.Tasks.Humo.New do
   @moduledoc """
   Creates a new Phoenix project.
 
   It expects the path of the project as an argument.
 
-      $ mix phx.new PATH [--module MODULE] [--app APP]
+      $ mix humo.new PATH [--module MODULE] [--app APP]
 
   A project at the given PATH will be created. The
   application name and module name will be retrieved
@@ -67,25 +67,25 @@ defmodule Mix.Tasks.Phx.New do
 
   ## Installation
 
-  `mix phx.new` by default prompts you to fetch and install your
+  `mix humo.new` by default prompts you to fetch and install your
   dependencies. You can enable this behaviour by passing the
   `--install` flag or disable it with the `--no-install` flag.
 
   ## Examples
 
-      $ mix phx.new hello_world
+      $ mix humo.new hello_world
 
   Is equivalent to:
 
-      $ mix phx.new hello_world --module HelloWorld
+      $ mix humo.new hello_world --module HelloWorld
 
   Or without the HTML and JS bits (useful for APIs):
 
-      $ mix phx.new ~/Workspace/hello_world --no-html --no-assets
+      $ mix humo.new ~/Workspace/hello_world --no-html --no-assets
 
   As an umbrella:
 
-      $ mix phx.new hello --umbrella
+      $ mix humo.new hello --umbrella
 
   Would generate the following directory structure and modules:
 
@@ -100,7 +100,7 @@ defmodule Mix.Tasks.Phx.New do
   official [Elixir guide](https://elixir-lang.org/getting-started/mix-otp/dependencies-and-umbrella-apps.html#umbrella-projects)
   """
   use Mix.Task
-  alias Phx.New.{Generator, Project, Single, Umbrella, Web, Ecto}
+  alias HumoNew.{Generator, Project, Single, Umbrella, Web, Ecto}
 
   @version Mix.Project.config()[:version]
   @shortdoc "Creates a new Phoenix v#{@version} application"
@@ -121,7 +121,7 @@ defmodule Mix.Tasks.Phx.New do
     elixir_version_check!()
     case parse_opts(argv) do
       {_opts, []} ->
-        Mix.Tasks.Help.run(["phx.new"])
+        Mix.Tasks.Help.run(["humo.new"])
 
       {opts, [base_path | _]} ->
         generator = if opts[:umbrella], do: Umbrella, else: Single
@@ -133,7 +133,7 @@ defmodule Mix.Tasks.Phx.New do
   def run(argv, generator, path) do
     elixir_version_check!()
     case parse_opts(argv) do
-      {_opts, []} -> Mix.Tasks.Help.run(["phx.new"])
+      {_opts, []} -> Mix.Tasks.Help.run(["humo.new"])
       {opts, [base_path | _]} -> generate(base_path, generator, path, opts)
     end
   end
@@ -183,7 +183,7 @@ defmodule Mix.Tasks.Phx.New do
       if path_key == :web_path do
         Mix.shell().info("""
         Your web app requires a PubSub server to be running.
-        The PubSub server is typically defined in a `mix phx.new.ecto` app.
+        The PubSub server is typically defined in a `mix humo.new.ecto` app.
         If you don't plan to define an Ecto app, you must explicitly start
         the PubSub in your supervision tree as:
 

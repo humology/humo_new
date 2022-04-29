@@ -1,9 +1,9 @@
-defmodule Phx.New.Ecto do
+defmodule HumoNew.Ecto do
   @moduledoc false
-  use Phx.New.Generator
-  alias Phx.New.{Project}
+  use HumoNew.Generator
+  alias HumoNew.Project
 
-  @pre "phx_umbrella/apps/app_name"
+  @pre "humo_umbrella/apps/app_name"
 
   template :new, [
     {:config, "#{@pre}/config/config.exs",           :project, "config/config.exs"},
@@ -29,7 +29,7 @@ defmodule Phx.New.Ecto do
   def generate(%Project{} = project) do
     inject_umbrella_config_defaults(project)
     copy_from project, __MODULE__, :new
-    if Project.ecto?(project), do: Phx.New.Single.gen_ecto(project)
+    if Project.ecto?(project), do: HumoNew.Single.gen_ecto(project)
     project
   end
 end

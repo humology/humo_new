@@ -1,19 +1,19 @@
-defmodule Phx.New.Umbrella do
+defmodule HumoNew.Umbrella do
   @moduledoc false
-  use Phx.New.Generator
-  alias Phx.New.{Ecto, Web, Project, Mailer}
+  use HumoNew.Generator
+  alias HumoNew.{Ecto, Web, Project, Mailer}
 
   template :new, [
-    {:eex,    "phx_umbrella/gitignore",               :project, ".gitignore"},
-    {:eex,    "phx_umbrella/config/config.exs",       :project, "config/config.exs"},
-    {:config, "phx_umbrella/config/extra_config.exs", :project, "config/config.exs"},
-    {:eex,    "phx_umbrella/config/dev.exs",          :project, "config/dev.exs"},
-    {:eex,    "phx_umbrella/config/test.exs",         :project, "config/test.exs"},
-    {:eex,    "phx_umbrella/config/prod.exs",         :project, "config/prod.exs"},
-    {:eex,    "phx_umbrella/config/runtime.exs",      :project, "config/runtime.exs"},
-    {:eex,    "phx_umbrella/mix.exs",                 :project, "mix.exs"},
-    {:eex,    "phx_umbrella/README.md",               :project, "README.md"},
-    {:eex,    "phx_umbrella/formatter.exs",           :project, ".formatter.exs"},
+    {:eex,    "humo_umbrella/gitignore",               :project, ".gitignore"},
+    {:eex,    "humo_umbrella/config/config.exs",       :project, "config/config.exs"},
+    {:config, "humo_umbrella/config/extra_config.exs", :project, "config/config.exs"},
+    {:eex,    "humo_umbrella/config/dev.exs",          :project, "config/dev.exs"},
+    {:eex,    "humo_umbrella/config/test.exs",         :project, "config/test.exs"},
+    {:eex,    "humo_umbrella/config/prod.exs",         :project, "config/prod.exs"},
+    {:eex,    "humo_umbrella/config/runtime.exs",      :project, "config/runtime.exs"},
+    {:eex,    "humo_umbrella/mix.exs",                 :project, "mix.exs"},
+    {:eex,    "humo_umbrella/README.md",               :project, "README.md"},
+    {:eex,    "humo_umbrella/formatter.exs",           :project, ".formatter.exs"},
   ]
 
   def prepare_project(%Project{app: app} = project) when not is_nil(app) do

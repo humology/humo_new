@@ -1,7 +1,7 @@
 /* This file is for your main application CSS */
 @import "./phoenix.css";
 
-/* Alerts and form errors used by phx.new */
+/* Alerts and form errors used by humo.new */
 .alert {
   padding: 15px;
   margin-bottom: 20px;

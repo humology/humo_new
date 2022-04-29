@@ -1,10 +1,10 @@
-defmodule Phx.New.Mailer do
+defmodule HumoNew.Mailer do
   @moduledoc false
-  use Phx.New.Generator
-  alias Phx.New.{Project}
+  use HumoNew.Generator
+  alias HumoNew.Project
 
   template :new, [
-    {:eex,  "phx_mailer/lib/app_name/mailer.ex", :app, "lib/:app/mailer.ex"}
+    {:eex,  "humo_mailer/lib/app_name/mailer.ex", :app, "lib/:app/mailer.ex"}
   ]
 
   def prepare_project(%Project{} = project) do

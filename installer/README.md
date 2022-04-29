@@ -1,15 +1,15 @@
-## mix phx.new
+## mix humo.new
 
-Provides `phx.new` installer as an archive.
+Provides `humo.new` installer as an archive.
 
 To install from Hex, run:
 
-    $ mix archive.install hex phx_new
+    $ mix archive.install hex humo_new
 
 To build and install it locally,
 ensure any previous archive versions are removed:
 
-    $ mix archive.uninstall phx_new
+    $ mix archive.uninstall humo_new
 
 Then run:
 

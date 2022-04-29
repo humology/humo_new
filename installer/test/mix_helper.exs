@@ -43,28 +43,6 @@ defmodule MixHelper do
     end
   end
 
-  def in_tmp_umbrella_project(which, function) do
-    conf_before = Application.get_env(:phoenix, :generators) || []
-    path = Path.join([tmp_path(), random_string(10), to_string(which)])
-
-    try do
-      apps_path = Path.join(path, "apps")
-      config_path = Path.join(path, "config")
-      File.rm_rf!(path)
-      File.mkdir_p!(path)
-      File.mkdir_p!(apps_path)
-      File.mkdir_p!(config_path)
-      File.touch!(Path.join(path, "mix.exs"))
-      for file <- ~w(config.exs dev.exs test.exs prod.exs) do
-        File.write!(Path.join(config_path, file), "import Config\n")
-      end
-      File.cd!(apps_path, function)
-    after
-      Application.put_env(:phoenix, :generators, conf_before)
-      File.rm_rf!(path)
-    end
-  end
-
   def in_project(app, path, fun) do
     %{name: name, file: file} = Mix.Project.pop()
 
@@ -120,25 +98,6 @@ defmodule MixHelper do
         :error -> Application.delete_env(app_name, :generators)
       end
     end
-  end
-
-  def umbrella_mixfile_contents do
-    """
-    defmodule Umbrella.MixProject do
-      use Mix.Project
-
-      def project do
-        [
-          apps_path: "apps",
-          deps: deps()
-        ]
-      end
-
-      defp deps do
-        []
-      end
-    end
-    """
   end
 
   def flush do

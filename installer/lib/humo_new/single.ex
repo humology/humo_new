@@ -87,9 +87,7 @@ defmodule HumoNew.Single do
   end
 
   defp put_app(%Project{base_path: base_path} = project) do
-    %Project{project |
-             in_umbrella?: in_umbrella?(base_path),
-             app_path: base_path}
+    %Project{project | app_path: base_path}
   end
 
   defp put_root_app(%Project{app: app, opts: opts} = project) do

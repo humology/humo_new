@@ -12,10 +12,6 @@ defmodule Mix.Tasks.Humo.New do
 
   ## Options
 
-    * `--umbrella` - generate an umbrella project,
-      with one application for your domain, and
-      a second application for the web interface.
-
     * `--app` - the name of the OTP application
 
     * `--module` - the name of the base module in
@@ -82,39 +78,23 @@ defmodule Mix.Tasks.Humo.New do
   Or without the HTML and JS bits (useful for APIs):
 
       $ mix humo.new ~/Workspace/hello_world --no-html --no-assets
-
-  As an umbrella:
-
-      $ mix humo.new hello --umbrella
-
-  Would generate the following directory structure and modules:
-
-  ```text
-  hello_umbrella/   Hello.Umbrella
-    apps/
-      hello/        Hello
-      hello_web/    HelloWeb
-  ```
-
-  You can read more about umbrella projects using the
-  official [Elixir guide](https://elixir-lang.org/getting-started/mix-otp/dependencies-and-umbrella-apps.html#umbrella-projects)
   """
   use Mix.Task
-  alias HumoNew.{Generator, Project, Single, Umbrella, Web, Ecto}
+  alias HumoNew.{Generator, Project, Single, Web, Ecto}
 
   @version Mix.Project.config()[:version]
-  @shortdoc "Creates a new Phoenix v#{@version} application"
+  @shortdoc "Creates a new Humo v#{@version} application"
 
   @switches [dev: :boolean, assets: :boolean, ecto: :boolean,
              app: :string, module: :string, web_module: :string,
              database: :string, binary_id: :boolean, html: :boolean,
-             gettext: :boolean, umbrella: :boolean, verbose: :boolean,
+             gettext: :boolean, verbose: :boolean,
              live: :boolean, dashboard: :boolean, install: :boolean,
              prefix: :string, mailer: :boolean]
 
   @impl true
   def run([version]) when version in ~w(-v --version) do
-    Mix.shell().info("Phoenix installer v#{@version}")
+    Mix.shell().info("Humo installer v#{@version}")
   end
 
   def run(argv) do
@@ -124,28 +104,27 @@ defmodule Mix.Tasks.Humo.New do
         Mix.Tasks.Help.run(["humo.new"])
 
       {opts, [base_path | _]} ->
-        generator = if opts[:umbrella], do: Umbrella, else: Single
-        generate(base_path, generator, :project_path, opts)
+        generate(base_path, :project_path, opts)
     end
   end
 
   @doc false
-  def run(argv, generator, path) do
+  def run(argv, path) do
     elixir_version_check!()
     case parse_opts(argv) do
       {_opts, []} -> Mix.Tasks.Help.run(["humo.new"])
-      {opts, [base_path | _]} -> generate(base_path, generator, path, opts)
+      {opts, [base_path | _]} -> generate(base_path, path, opts)
     end
   end
 
-  defp generate(base_path, generator, path, opts) do
+  defp generate(base_path, path, opts) do
     base_path
     |> Project.new(opts)
-    |> generator.prepare_project()
+    |> Single.prepare_project()
     |> Generator.put_binding()
     |> validate_project(path)
-    |> generator.generate()
-    |> prompt_to_install_deps(generator, path)
+    |> Single.generate()
+    |> prompt_to_install_deps(Single, path)
   end
 
   defp validate_project(%Project{opts: opts} = project, path) do

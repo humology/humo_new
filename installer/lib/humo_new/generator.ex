@@ -135,30 +135,11 @@ defmodule HumoNew.Generator do
     File.write!(file, [formatted, ?\n])
   end
 
-  def inject_umbrella_config_defaults(project) do
-    unless File.exists?(Project.join_path(project, :project, "config/dev.exs")) do
-      path = Project.join_path(project, :project, "config/config.exs")
-
-      extra =
-        HumoNew.Umbrella.render(:new, "humo_umbrella/config/extra_config.exs", project.binding)
-
-      File.write(path, [File.read!(path), extra])
-    end
-  end
-
   defp split_with_self(contents, text) do
     case :binary.split(contents, text) do
       [left, right] -> [left, text, right]
       [_] -> :error
     end
-  end
-
-  def in_umbrella?(app_path) do
-    umbrella = Path.expand(Path.join([app_path, "..", ".."]))
-    mix_path = Path.join(umbrella, "mix.exs")
-    apps_path = Path.join(umbrella, "apps")
-
-    File.exists?(mix_path) && File.exists?(apps_path)
   end
 
   def put_binding(%Project{opts: opts} = project) do
@@ -208,7 +189,6 @@ defmodule HumoNew.Generator do
       secret_key_base_test: random_string(64),
       signing_salt: random_string(8),
       lv_signing_salt: random_string(8),
-      in_umbrella: project.in_umbrella?,
       assets: assets,
       mailer: mailer,
       ecto: ecto,
@@ -399,8 +379,7 @@ defmodule HumoNew.Generator do
     "deps/phoenix"
   end
 
-  defp phoenix_path_prefix(%Project{in_umbrella?: true}), do: "../../../"
-  defp phoenix_path_prefix(%Project{in_umbrella?: false}), do: ".."
+  defp phoenix_path_prefix(_), do: ".."
 
   defp phoenix_dep("deps/phoenix", %{pre: ["dev"]}),
     do: ~s[{:phoenix, github: "phoenixframework/phoenix", override: true}]

@@ -16,7 +16,7 @@ defmodule Mix.Tasks.Humo.NewTest do
 
   test "returns the version" do
     Mix.Tasks.Humo.New.run(["-v"])
-    assert_received {:mix_shell, :info, ["Phoenix installer v" <> _]}
+    assert_received {:mix_shell, :info, ["Humo installer v" <> _]}
   end
 
   test "new with defaults" do
@@ -490,21 +490,6 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "custom_path/lib/humo_blog_web/endpoint.ex", ~r/app: :humo_blog/
       assert_file "custom_path/config/config.exs", ~r/namespace: PhoteuxBlog/
       assert_file "custom_path/lib/humo_blog_web.ex", ~r/use Phoenix.Controller, namespace: PhoteuxBlogWeb/
-    end
-  end
-
-  test "new inside umbrella" do
-    in_tmp "new inside umbrella", fn ->
-      File.write! "mix.exs", MixHelper.umbrella_mixfile_contents()
-      File.mkdir! "apps"
-      File.cd! "apps", fn ->
-        Mix.Tasks.Humo.New.run([@app_name])
-
-        assert_file "humo_blog/mix.exs", fn file ->
-          assert file =~ "deps_path: \"../../deps\""
-          assert file =~ "lockfile: \"../../mix.lock\""
-        end
-      end
     end
   end
 

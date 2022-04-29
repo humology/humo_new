@@ -14,7 +14,6 @@ defmodule HumoNew.Project do
             web_namespace: nil,
             web_path: nil,
             opts: :unset,
-            in_umbrella?: false,
             binding: [],
             generators: []
 

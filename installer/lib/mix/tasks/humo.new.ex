@@ -42,8 +42,6 @@ defmodule Mix.Tasks.Humo.New do
     * `--no-live` - comment out LiveView socket setup in assets/js/app.js
       and also on the endpoint (the latter also requires `--no-dashboard`)
 
-    * `--no-mailer` - do not generate Swoosh mailer files
-
     * `--binary-id` - use `binary_id` as primary key type in Ecto schemas
 
     * `--verbose` - use verbose output
@@ -90,7 +88,7 @@ defmodule Mix.Tasks.Humo.New do
              database: :string, binary_id: :boolean, html: :boolean,
              gettext: :boolean, verbose: :boolean,
              live: :boolean, dashboard: :boolean, install: :boolean,
-             prefix: :string, mailer: :boolean]
+             prefix: :string]
 
   @impl true
   def run([version]) when version in ~w(-v --version) do

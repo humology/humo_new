@@ -150,7 +150,6 @@ defmodule HumoNew.Generator do
     dashboard = Keyword.get(opts, :dashboard, true)
     gettext = Keyword.get(opts, :gettext, true)
     assets = Keyword.get(opts, :assets, true)
-    mailer = Keyword.get(opts, :mailer, true)
     dev = Keyword.get(opts, :dev, false)
     phoenix_path = phoenix_path(project, dev)
 
@@ -190,7 +189,6 @@ defmodule HumoNew.Generator do
       signing_salt: random_string(8),
       lv_signing_salt: random_string(8),
       assets: assets,
-      mailer: mailer,
       ecto: ecto,
       html: html,
       live: live,

@@ -201,25 +201,6 @@ defmodule Mix.Tasks.Humo.NewTest do
         assert file =~ "summary(\"humo_blog.repo.query.total_time\","
       end
 
-      # Mailer
-      assert_file "humo_blog/mix.exs", fn file ->
-        assert file =~ "{:swoosh, \"~> 1.3\"}"
-      end
-
-      assert_file "humo_blog/lib/humo_blog/mailer.ex", fn file ->
-        assert file =~ "defmodule HumoBlog.Mailer do"
-        assert file =~ "use Swoosh.Mailer, otp_app: :humo_blog"
-      end
-
-      assert_file "humo_blog/config/config.exs", fn file ->
-        assert file =~ "config :swoosh"
-        assert file =~ "config :humo_blog, HumoBlog.Mailer, adapter: Swoosh.Adapters.Local"
-      end
-
-      assert_file "humo_blog/config/test.exs", fn file ->
-        assert file =~ "config :humo_blog, HumoBlog.Mailer, adapter: Swoosh.Adapters.Test"
-      end
-
       # Install dependencies?
       assert_received {:mix_shell, :yes?, ["\nFetch and install dependencies?"]}
 
@@ -240,7 +221,7 @@ defmodule Mix.Tasks.Humo.NewTest do
 
   test "new without defaults" do
     in_tmp "new without defaults", fn ->
-      Mix.Tasks.Humo.New.run([@app_name, "--no-html", "--no-assets", "--no-ecto", "--no-gettext", "--no-dashboard", "--no-mailer"])
+      Mix.Tasks.Humo.New.run([@app_name, "--no-html", "--no-assets", "--no-ecto", "--no-gettext", "--no-dashboard"])
 
       # No assets
       assert_file "humo_blog/.gitignore", fn file ->
@@ -341,14 +322,6 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "humo_blog/lib/humo_blog_web/router.ex", fn file ->
         refute file =~ "live_dashboard"
         refute file =~ "import Phoenix.LiveDashboard.Router"
-      end
-
-      # No mailer or emails
-      refute File.exists? "humo_blog/lib/humo_blog/mailer.ex"
-
-      assert_file "humo_blog/config/config.exs", fn file ->
-        refute file =~ "config :swoosh"
-        refute file =~ "config :humo_blog, HumoBlog.Mailer, adapter: Swoosh.Adapters.Local"
       end
     end
   end

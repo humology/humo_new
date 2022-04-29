@@ -75,10 +75,6 @@ defmodule HumoNew.Single do
     {:text, "humo_static/favicon.ico", :web, "priv/static/favicon.ico"},
   ]
 
-  template :mailer, [
-    {:eex,  "humo_mailer/lib/app_name/mailer.ex", :app, "lib/:app/mailer.ex"}
-  ]
-
   def prepare_project(%Project{app: app} = project) when not is_nil(app) do
     %Project{project | project_path: project.base_path}
     |> put_app()
@@ -109,7 +105,6 @@ defmodule HumoNew.Single do
 
     if Project.ecto?(project), do: gen_ecto(project)
     if Project.html?(project), do: gen_html(project)
-    if Project.mailer?(project), do: gen_mailer(project)
     if Project.gettext?(project), do: gen_gettext(project)
 
     gen_assets(project)
@@ -135,9 +130,5 @@ defmodule HumoNew.Single do
       copy_from project, __MODULE__, command
       copy_from project, __MODULE__, :static
     end
-  end
-
-  def gen_mailer(%Project{} = project) do
-    copy_from project, __MODULE__, :mailer
   end
 end

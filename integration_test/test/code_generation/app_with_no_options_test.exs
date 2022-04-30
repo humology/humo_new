@@ -1,17 +1,16 @@
-defmodule Phoenix.Integration.CodeGeneration.AppWithNoOptionsTest do
-  use Phoenix.Integration.CodeGeneratorCase, async: true
+defmodule Humo.Integration.CodeGeneration.AppWithNoOptionsTest do
+  use Humo.Integration.CodeGeneratorCase, async: true
 
   @epoch {{1970, 1, 1}, {0, 0, 0}}
 
   test "newly generated app has no warnings or errors" do
     with_installer_tmp("app_with_no_options", fn tmp_dir ->
       {app_root_path, _} =
-        generate_phoenix_app(tmp_dir, "phx_blog", [
+        generate_humo_app(tmp_dir, "phx_blog", [
           "--no-html",
           "--no-assets",
           "--no-ecto",
           "--no-gettext",
-          "--no-mailer",
           "--no-dashboard"
         ])
 
@@ -24,11 +23,10 @@ defmodule Phoenix.Integration.CodeGeneration.AppWithNoOptionsTest do
   test "development workflow works as expected" do
     with_installer_tmp("development_workflow", fn tmp_dir ->
       {app_root_path, _} =
-        generate_phoenix_app(tmp_dir, "phx_blog", [
+        generate_humo_app(tmp_dir, "phx_blog", [
           "--no-assets",
           "--no-ecto",
           "--no-gettext",
-          "--no-mailer",
           "--no-dashboard"
         ])
 

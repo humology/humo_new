@@ -1,14 +1,14 @@
 for path <- :code.get_path(),
-    Regex.match?(~r/phx_new\-\d+\.\d+\.\d\/ebin$/, List.to_string(path)) do
+    Regex.match?(~r/humo_new\-\d+\.\d+\.\d\/ebin$/, List.to_string(path)) do
   Code.delete_path(path)
 end
 
-defmodule Phoenix.Integration.MixProject do
+defmodule Humo.Integration.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :phoenix_integration,
+      app: :humo_integration,
       version: "0.1.0",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -31,7 +31,7 @@ defmodule Phoenix.Integration.MixProject do
   # will not be copied.
   defp deps do
     [
-      {:phx_new, path: "../installer"},
+      {:humo_new, path: "../installer"},
       {:phoenix, path: "..", override: true},
       {:phoenix_ecto, "~> 4.4"},
       {:esbuild, "~> 0.4", runtime: false},
@@ -48,7 +48,6 @@ defmodule Phoenix.Integration.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
-      {:swoosh, "~> 1.3"},
       {:plug_cowboy, "~> 2.5"},
       {:bcrypt_elixir, "~> 3.0"},
       {:argon2_elixir, "~> 3.0"},

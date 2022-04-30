@@ -1,4 +1,4 @@
-defmodule Phoenix.Integration.CodeGeneratorCase do
+defmodule Humo.Integration.CodeGeneratorCase do
   use ExUnit.CaseTemplate
 
   using do
@@ -7,14 +7,14 @@ defmodule Phoenix.Integration.CodeGeneratorCase do
     end
   end
 
-  def generate_phoenix_app(tmp_dir, app_name, opts \\ [])
+  def generate_humo_app(tmp_dir, app_name, opts \\ [])
       when is_binary(app_name) and is_list(opts) do
     app_path = Path.expand(app_name, tmp_dir)
     integration_test_root_path = Path.expand("../../", __DIR__)
-    app_root_path = get_app_root_path(tmp_dir, app_name, opts)
+    app_root_path = get_app_root_path(tmp_dir, app_name)
 
     output =
-      mix_run!(["phx.new", app_path, "--dev", "--no-install"] ++ opts, integration_test_root_path)
+      mix_run!(["humo.new", app_path, "--dev", "--no-install"] ++ opts, integration_test_root_path)
 
     for path <- ~w(mix.lock deps _build) do
       File.cp_r!(
@@ -135,15 +135,8 @@ defmodule Phoenix.Integration.CodeGeneratorCase do
     File.write!(path, content)
   end
 
-  defp get_app_root_path(tmp_dir, app_name, opts) do
-    app_root_dir =
-      if "--umbrella" in opts do
-        app_name <> "_umbrella"
-      else
-        app_name
-      end
-
-    Path.expand(app_root_dir, tmp_dir)
+  defp get_app_root_path(tmp_dir, app_name) do
+    Path.expand(app_name, tmp_dir)
   end
 
   defp random_string(len) do

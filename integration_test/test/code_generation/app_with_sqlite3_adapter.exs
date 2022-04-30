@@ -1,12 +1,12 @@
-defmodule Phoenix.Integration.CodeGeneration.AppWithSQLite3AdapterTest do
-  use Phoenix.Integration.CodeGeneratorCase, async: true
+defmodule Humo.Integration.CodeGeneration.AppWithSQLite3AdapterTest do
+  use Humo.Integration.CodeGeneratorCase, async: true
 
   describe "phx.gen.html" do
     @tag database: :sqlite3
     test "has a passing test suite" do
       with_installer_tmp("app_with_defaults", fn tmp_dir ->
         {app_root_path, _} =
-          generate_phoenix_app(tmp_dir, "default_sqlite3_app", ["--database", "sqlite3"])
+          generate_humo_app(tmp_dir, "default_sqlite3_app", ["--database", "sqlite3"])
 
         mix_run!(~w(phx.gen.html Blog Post posts title body:string status:enum:unpublished:published:deleted), app_root_path)
 
@@ -32,7 +32,7 @@ defmodule Phoenix.Integration.CodeGeneration.AppWithSQLite3AdapterTest do
     test "has a passing test suite" do
       with_installer_tmp("app_with_defaults", fn tmp_dir ->
         {app_root_path, _} =
-          generate_phoenix_app(tmp_dir, "default_sqlite3_app", ["--database", "sqlite3"])
+          generate_humo_app(tmp_dir, "default_sqlite3_app", ["--database", "sqlite3"])
 
         mix_run!(~w(phx.gen.json Blog Post posts title body:string status:enum:unpublished:published:deleted), app_root_path)
 
@@ -58,7 +58,7 @@ defmodule Phoenix.Integration.CodeGeneration.AppWithSQLite3AdapterTest do
     test "has a passing test suite" do
       with_installer_tmp("app_with_defaults", fn tmp_dir ->
         {app_root_path, _} =
-          generate_phoenix_app(tmp_dir, "default_sqlite3_app", ["--database", "sqlite3", "--live"])
+          generate_humo_app(tmp_dir, "default_sqlite3_app", ["--database", "sqlite3", "--live"])
 
         mix_run!(~w(phx.gen.live Blog Post posts title body:string status:enum:unpublished:published:deleted), app_root_path)
 
@@ -77,31 +77,6 @@ defmodule Phoenix.Integration.CodeGeneration.AppWithSQLite3AdapterTest do
             end
           """)
         end)
-
-        drop_test_database(app_root_path)
-        assert_tests_pass(app_root_path)
-      end)
-    end
-  end
-
-  describe "phx.gen.auth + bcrypt" do
-    test "has no compilation or formatter warnings" do
-      with_installer_tmp("new with defaults", fn tmp_dir ->
-        {app_root_path, _} = generate_phoenix_app(tmp_dir, "phx_blog", ["--database", "sqlite3"])
-
-        mix_run!(~w(phx.gen.auth Accounts User users), app_root_path)
-
-        assert_no_compilation_warnings(app_root_path)
-        assert_passes_formatter_check(app_root_path)
-      end)
-    end
-
-    @tag database: :sqlite3
-    test "has a passing test suite" do
-      with_installer_tmp("app_with_defaults", fn tmp_dir ->
-        {app_root_path, _} = generate_phoenix_app(tmp_dir, "default_app", ["--database", "sqlite3"])
-
-        mix_run!(~w(phx.gen.auth Accounts User users), app_root_path)
 
         drop_test_database(app_root_path)
         assert_tests_pass(app_root_path)

@@ -9,7 +9,6 @@ defmodule Humo.Integration.CodeGeneration.AppWithNoOptionsTest do
         generate_humo_app(tmp_dir, "phx_blog", [
           "--no-html",
           "--no-assets",
-          "--no-ecto",
           "--no-gettext",
           "--no-dashboard"
         ])
@@ -25,7 +24,6 @@ defmodule Humo.Integration.CodeGeneration.AppWithNoOptionsTest do
       {app_root_path, _} =
         generate_humo_app(tmp_dir, "phx_blog", [
           "--no-assets",
-          "--no-ecto",
           "--no-gettext",
           "--no-dashboard"
         ])
@@ -33,6 +31,9 @@ defmodule Humo.Integration.CodeGeneration.AppWithNoOptionsTest do
       assert_no_compilation_warnings(app_root_path)
 
       File.touch!(Path.join(app_root_path, "lib/phx_blog_web/views/page_view.ex"), @epoch)
+
+      mix_run!(["ecto.drop"], app_root_path)
+      mix_run!(["ecto.create"], app_root_path)
 
       spawn_link(fn ->
         run_phx_server(app_root_path)

@@ -144,7 +144,6 @@ defmodule HumoNew.Generator do
 
   def put_binding(%Project{opts: opts} = project) do
     db = Keyword.get(opts, :database, "postgres")
-    ecto = Keyword.get(opts, :ecto, true)
     html = Keyword.get(opts, :html, true)
     live = html && Keyword.get(opts, :live, true)
     dashboard = Keyword.get(opts, :dashboard, true)
@@ -189,7 +188,6 @@ defmodule HumoNew.Generator do
       signing_salt: random_string(8),
       lv_signing_salt: random_string(8),
       assets: assets,
-      ecto: ecto,
       html: html,
       live: live,
       live_comment: if(live, do: nil, else: "// "),

@@ -5,12 +5,12 @@
 # is restricted to this project.
 
 # General application configuration
-import Config<%= if @namespaced? || @ecto || @generators do %>
+import Config
 
 config :<%= @app_name %><%= if @namespaced? do %>,
-  namespace: <%= @app_module %><% end %><%= if @ecto do %>,
-  ecto_repos: [<%= @app_module %>.Repo]<% end %><%= if @generators do %>,
-  generators: <%= inspect @generators %><% end %><% end %>
+  namespace: <%= @app_module %><% end %>,
+  ecto_repos: [<%= @app_module %>.Repo]<%= if @generators do %>,
+  generators: <%= inspect @generators %><% end %>
 
 # Configures the endpoint
 config :<%= @app_name %>, <%= @endpoint_module %>,

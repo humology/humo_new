@@ -29,14 +29,10 @@ defmodule <%= @web_namespace %>.ConnCase do
       # The default endpoint for testing
       @endpoint <%= @endpoint_module %>
     end
-  end<%= if @ecto do %>
+  end
 
   setup tags do
     <%= @app_module %>.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
-  end<% else %>
-
-  setup _tags do
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
-  end<% end %>
+  end
 end

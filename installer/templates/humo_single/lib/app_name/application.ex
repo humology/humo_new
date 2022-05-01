@@ -7,9 +7,9 @@ defmodule <%= @app_module %>.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [<%= if @ecto do %>
+    children = [
       # Start the Ecto repository
-      <%= @app_module %>.Repo,<% end %>
+      <%= @app_module %>.Repo,
       # Start the Telemetry supervisor
       <%= @web_namespace %>.Telemetry,
       # Start the PubSub system

@@ -33,10 +33,10 @@ defmodule <%= @app_module %>.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      <%= @phoenix_dep %>,<%= if @ecto do %>
+      <%= @phoenix_dep %>,
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.6"},
-      {<%= inspect @adapter_app %>, ">= 0.0.0"},<% end %><%= if @html do %>
+      {<%= inspect @adapter_app %>, ">= 0.0.0"},<%= if @html do %>
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 0.17.5"},
@@ -59,10 +59,10 @@ defmodule <%= @app_module %>.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get"<%= if @ecto do %>, "ecto.setup"<% end %>]<%= if @ecto do %>,
+      setup: ["deps.get", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]<% end %><%= if @assets do %>,
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]<%= if @assets do %>,
       "assets.deploy": ["esbuild default --minify", "phx.digest"]<% end %>
     ]
   end

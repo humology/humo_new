@@ -103,7 +103,7 @@ defmodule HumoNew.Single do
   def generate(%Project{} = project) do
     copy_from project, __MODULE__, :new
 
-    if Project.ecto?(project), do: gen_ecto(project)
+    gen_ecto(project)
     if Project.html?(project), do: gen_html(project)
     if Project.gettext?(project), do: gen_gettext(project)
 

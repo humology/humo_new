@@ -30,10 +30,6 @@ defmodule HumoNew.Project do
              opts: opts}
   end
 
-  def ecto?(%Project{binding: binding}) do
-    Keyword.fetch!(binding, :ecto)
-  end
-
   def html?(%Project{binding: binding}) do
     Keyword.fetch!(binding, :html)
   end

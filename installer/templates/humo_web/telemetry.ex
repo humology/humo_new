@@ -28,7 +28,7 @@ defmodule <%= @web_namespace %>.Telemetry do
       summary("phoenix.router_dispatch.stop.duration",
         tags: [:route],
         unit: {:native, :millisecond}
-      ),<%= if @ecto do %>
+      ),
 
       # Database Metrics
       summary("<%= @app_name %>.repo.query.total_time",
@@ -51,7 +51,7 @@ defmodule <%= @web_namespace %>.Telemetry do
         unit: {:native, :millisecond},
         description:
           "The time the connection spent waiting before being checked out for the query"
-      ),<% end %>
+      ),
 
       # VM Metrics
       summary("vm.memory.total", unit: {:byte, :kilobyte}),

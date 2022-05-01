@@ -221,7 +221,7 @@ defmodule Mix.Tasks.Humo.NewTest do
 
   test "new without defaults" do
     in_tmp "new without defaults", fn ->
-      Mix.Tasks.Humo.New.run([@app_name, "--no-html", "--no-assets", "--no-ecto", "--no-gettext", "--no-dashboard"])
+      Mix.Tasks.Humo.New.run([@app_name, "--no-html", "--no-assets", "--no-gettext", "--no-dashboard"])
 
       # No assets
       assert_file "humo_blog/.gitignore", fn file ->
@@ -238,40 +238,38 @@ defmodule Mix.Tasks.Humo.NewTest do
       refute_file "humo_blog/priv/static/images/phoenix.png"
       refute_file "humo_blog/priv/static/assets/app.js"
 
-      # No Ecto
       config = ~r/config :humo_blog, HumoBlog.Repo,/
-      refute File.exists?("humo_blog/lib/humo_blog/repo.ex")
+      assert File.exists?("humo_blog/lib/humo_blog/repo.ex")
       assert_file "humo_blog/lib/humo_blog_web/endpoint.ex", fn file ->
-        refute file =~ "plug Phoenix.Ecto.CheckRepoStatus, otp_app: :humo_blog"
+        assert file =~ "plug Phoenix.Ecto.CheckRepoStatus, otp_app: :humo_blog"
       end
 
       assert_file "humo_blog/lib/humo_blog_web/telemetry.ex", fn file ->
-        refute file =~ "# Database Metrics"
-        refute file =~ "summary(\"humo_blog.repo.query.total_time\","
+        assert file =~ "# Database Metrics"
+        assert file =~ "summary(\"humo_blog.repo.query.total_time\","
       end
 
       assert_file "humo_blog/.formatter.exs", fn file ->
-        assert file =~ "import_deps: [:phoenix]"
-        assert file =~ "inputs: [\"*.{ex,exs}\", \"{config,lib,test}/**/*.{ex,exs}\"]"
-        refute file =~ "subdirectories:"
+        assert file =~ "import_deps: [:ecto, :phoenix]"
+        assert file =~ "inputs: [\"*.{ex,exs}\", \"{config,lib,test}/**/*.{ex,exs}\", \"priv/*/seeds.exs\"]"
+        assert file =~ "subdirectories: [\"priv/*/migrations\"]"
       end
 
-      assert_file "humo_blog/mix.exs", &refute(&1 =~ ~r":phoenix_ecto")
+      assert_file "humo_blog/mix.exs", &assert(&1 =~ ~r":phoenix_ecto")
 
       assert_file "humo_blog/config/config.exs", fn file ->
         refute file =~ "config :esbuild"
         refute file =~ "config :humo_blog, :generators"
-        refute file =~ "ecto_repos:"
+        assert file =~ "ecto_repos:"
       end
 
       assert_file "humo_blog/config/dev.exs", fn file ->
-        refute file =~ config
+        assert file =~ config
         assert file =~ "config :phoenix, :plug_init_mode, :runtime"
       end
 
-      assert_file "humo_blog/config/test.exs", &refute(&1 =~ config)
-      assert_file "humo_blog/config/runtime.exs", &refute(&1 =~ config)
-      assert_file "humo_blog/lib/humo_blog_web.ex", &refute(&1 =~ ~r"alias HumoBlog.Repo")
+      assert_file "humo_blog/config/test.exs", &assert(&1 =~ config)
+      assert_file "humo_blog/config/runtime.exs", &assert(&1 =~ config)
 
       # No gettext
       refute_file "humo_blog/lib/humo_blog_web/gettext.ex"

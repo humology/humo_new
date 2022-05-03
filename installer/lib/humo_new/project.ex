@@ -46,10 +46,6 @@ defmodule HumoNew.Project do
     Keyword.fetch!(binding, :dashboard)
   end
 
-  def assets?(%Project{binding: binding}) do
-    Keyword.fetch!(binding, :assets)
-  end
-
   def verbose?(%Project{opts: opts}) do
     Keyword.get(opts, :verbose, false)
   end

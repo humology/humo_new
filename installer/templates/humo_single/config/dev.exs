@@ -14,10 +14,10 @@ config :<%= @app_name %>, <%= @endpoint_module %>,
   code_reloader: true,
   debug_errors: true,
   secret_key_base: "<%= @secret_key_base_dev %>",
-  watchers: <%= if @assets do %>[
+  watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
-  ]<% else %>[]<% end %>
+  ]
 
 # ## SSL Support
 #

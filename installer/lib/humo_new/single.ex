@@ -63,16 +63,10 @@ defmodule HumoNew.Single do
     {:keep, "humo_assets/vendor",      :web, "assets/vendor"},
   ]
 
-  template :no_assets, [
-    {:text, "humo_static/phoenix.css", :web, "priv/static/assets/phoenix.css"},
-    {:text, "humo_static/app.css",     :web, "priv/static/assets/app.css"},
-    {:text, "humo_static/app.js",      :web, "priv/static/assets/app.js"},
-  ]
-
   template :static, [
-    {:text, "humo_static/robots.txt",  :web, "priv/static/robots.txt"},
-    {:text, "humo_static/phoenix.png", :web, "priv/static/images/phoenix.png"},
-    {:text, "humo_static/favicon.ico", :web, "priv/static/favicon.ico"},
+    {:text, "humo_static/robots.txt",  :web, "assets/robots.txt"},
+    {:text, "humo_static/phoenix.png", :web, "assets/images/phoenix.png"},
+    {:text, "humo_static/favicon.ico", :web, "assets/favicon.ico"},
   ]
 
   def prepare_project(%Project{app: app} = project) when not is_nil(app) do
@@ -125,10 +119,7 @@ defmodule HumoNew.Single do
   end
 
   def gen_assets(%Project{} = project) do
-    if Project.assets?(project) or Project.html?(project) do
-      command = if Project.assets?(project), do: :assets, else: :no_assets
-      copy_from project, __MODULE__, command
-      copy_from project, __MODULE__, :static
-    end
+    copy_from project, __MODULE__, :assets
+    copy_from project, __MODULE__, :static
   end
 end

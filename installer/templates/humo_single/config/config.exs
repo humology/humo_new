@@ -17,7 +17,7 @@ config :<%= @app_name %>, <%= @endpoint_module %>,
   url: [host: "localhost"],
   render_errors: [view: <%= @web_namespace %>.ErrorView, accepts: ~w(<%= if @html do %>html <% end %>json), layout: false],
   pubsub_server: <%= @app_module %>.PubSub,
-  live_view: [signing_salt: "<%= @lv_signing_salt %>"]<%= if @assets do %>
+  live_view: [signing_salt: "<%= @lv_signing_salt %>"]
 
 # Configure esbuild (the version is required)
 config :esbuild,
@@ -27,7 +27,7 @@ config :esbuild,
       ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
-  ]<% end %>
+  ]
 
 # Configures Elixir's Logger
 config :logger, :console,

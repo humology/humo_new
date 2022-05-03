@@ -8,7 +8,6 @@ defmodule Humo.Integration.CodeGeneration.AppWithNoOptionsTest do
       {app_root_path, _} =
         generate_humo_app(tmp_dir, "phx_blog", [
           "--no-html",
-          "--no-assets",
           "--no-gettext",
           "--no-dashboard"
         ])
@@ -23,7 +22,6 @@ defmodule Humo.Integration.CodeGeneration.AppWithNoOptionsTest do
     with_installer_tmp("development_workflow", fn tmp_dir ->
       {app_root_path, _} =
         generate_humo_app(tmp_dir, "phx_blog", [
-          "--no-assets",
           "--no-gettext",
           "--no-dashboard"
         ])

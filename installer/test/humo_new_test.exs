@@ -221,23 +221,25 @@ defmodule Mix.Tasks.Humo.NewTest do
 
   test "new without defaults" do
     in_tmp "new without defaults", fn ->
-      Mix.Tasks.Humo.New.run([@app_name, "--no-html", "--no-assets", "--no-gettext", "--no-dashboard"])
+      Mix.Tasks.Humo.New.run([@app_name, "--no-html", "--no-gettext", "--no-dashboard"])
 
-      # No assets
+      # assets
       assert_file "humo_blog/.gitignore", fn file ->
-        refute file =~ "/priv/static/assets/"
-        assert file =~ ~r/\n$/
+        assert file =~ "/priv/static/assets/"
       end
 
-      assert_file "humo_blog/config/dev.exs", ~r/watchers: \[\]/
+      assert_file "humo_blog/config/dev.exs", fn file ->
+        refute file =~ ~r/watchers: \[\]/
+        assert file =~ "esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}"
+      end
 
-      # No assets & No HTML
-      refute_file "humo_blog/priv/static/assets/app.css"
-      refute_file "humo_blog/priv/static/assets/phoenix.css"
-      refute_file "humo_blog/priv/static/favicon.ico"
-      refute_file "humo_blog/priv/static/images/phoenix.png"
-      refute_file "humo_blog/priv/static/assets/app.js"
+      assert_file "humo_blog/assets/css/app.css"
+      assert_file "humo_blog/assets/css/phoenix.css"
+      assert_file "humo_blog/assets/favicon.ico"
+      assert_file "humo_blog/assets/images/phoenix.png"
+      assert_file "humo_blog/assets/js/app.js"
 
+      # Ecto
       config = ~r/config :humo_blog, HumoBlog.Repo,/
       assert File.exists?("humo_blog/lib/humo_blog/repo.ex")
       assert_file "humo_blog/lib/humo_blog_web/endpoint.ex", fn file ->
@@ -258,7 +260,7 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "humo_blog/mix.exs", &assert(&1 =~ ~r":phoenix_ecto")
 
       assert_file "humo_blog/config/config.exs", fn file ->
-        refute file =~ "config :esbuild"
+        assert file =~ "config :esbuild"
         refute file =~ "config :humo_blog, :generators"
         assert file =~ "ecto_repos:"
       end
@@ -385,43 +387,6 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "humo_blog/lib/humo_blog_web/router.ex", fn file ->
         refute file =~ ~s|pipeline :browser|
         assert file =~ ~s|pipe_through [:fetch_session, :protect_from_forgery]|
-      end
-    end
-  end
-
-  test "new with --no-assets" do
-    in_tmp "new no_assets", fn ->
-      Mix.Tasks.Humo.New.run([@app_name, "--no-assets"])
-
-      assert_file "humo_blog/.gitignore", fn file ->
-        refute file =~ "/priv/static/assets/"
-      end
-
-      assert_file "humo_blog/.gitignore"
-      assert_file "humo_blog/.gitignore", ~r/\n$/
-      assert_file "humo_blog/priv/static/assets/app.css"
-      assert_file "humo_blog/priv/static/assets/phoenix.css"
-      assert_file "humo_blog/priv/static/assets/app.js"
-      assert_file "humo_blog/priv/static/favicon.ico"
-      assert_file "humo_blog/priv/static/images/phoenix.png"
-
-      assert_file "humo_blog/config/config.exs", fn file ->
-        refute file =~ "config :esbuild"
-      end
-    end
-  end
-
-  test "new with --no-ecto" do
-    in_tmp "new with no_ecto", fn ->
-      Mix.Tasks.Humo.New.run([@app_name, "--no-ecto"])
-
-      if Version.match?(System.version(), ">= 1.13.4") do
-        assert_file "humo_blog/.formatter.exs", fn file ->
-          assert file =~ "import_deps: [:phoenix]"
-          assert file =~ "plugins: [Phoenix.LiveView.HTMLFormatter]"
-          assert file =~ "inputs: [\"*.{heex,ex,exs}\", \"{config,lib,test}/**/*.{heex,ex,exs}\"]"
-          refute file =~ "subdirectories:"
-        end
       end
     end
   end

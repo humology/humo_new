@@ -148,7 +148,6 @@ defmodule HumoNew.Generator do
     live = html && Keyword.get(opts, :live, true)
     dashboard = Keyword.get(opts, :dashboard, true)
     gettext = Keyword.get(opts, :gettext, true)
-    assets = Keyword.get(opts, :assets, true)
     dev = Keyword.get(opts, :dev, false)
     phoenix_path = phoenix_path(project, dev)
 
@@ -187,7 +186,6 @@ defmodule HumoNew.Generator do
       secret_key_base_test: random_string(64),
       signing_salt: random_string(8),
       lv_signing_salt: random_string(8),
-      assets: assets,
       html: html,
       live: live,
       live_comment: if(live, do: nil, else: "// "),

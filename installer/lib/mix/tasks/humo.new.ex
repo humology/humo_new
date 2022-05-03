@@ -27,10 +27,6 @@ defmodule Mix.Tasks.Humo.New do
       Please check the driver docs for more information
       and requirements. Defaults to "postgres".
 
-    * `--no-assets` - do not generate the assets folder.
-      When choosing this option, you will need to manually
-      handle JavaScript/CSS if building HTML apps
-
     * `--no-html` - do not generate HTML views
 
     * `--no-gettext` - do not generate gettext files
@@ -66,7 +62,7 @@ defmodule Mix.Tasks.Humo.New do
 
   Or without the HTML and JS bits (useful for APIs):
 
-      $ mix humo.new ~/Workspace/hello_world --no-html --no-assets
+      $ mix humo.new ~/Workspace/hello_world --no-html
   """
   use Mix.Task
   alias HumoNew.{Generator, Project, Single}
@@ -74,7 +70,7 @@ defmodule Mix.Tasks.Humo.New do
   @version Mix.Project.config()[:version]
   @shortdoc "Creates a new Humo v#{@version} application"
 
-  @switches [dev: :boolean, assets: :boolean, ecto: :boolean,
+  @switches [dev: :boolean, ecto: :boolean,
              app: :string, module: :string, web_module: :string,
              database: :string, binary_id: :boolean, html: :boolean,
              gettext: :boolean, verbose: :boolean,

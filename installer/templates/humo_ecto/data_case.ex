@@ -18,7 +18,7 @@ defmodule <%= @app_module %>.DataCase do
 
   using do
     quote do
-      alias <%= @app_module %>.Repo
+      alias Humo.Repo
 
       import Ecto
       import Ecto.Changeset

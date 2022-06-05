@@ -1,0 +1,6 @@
+{
+  "name": "<%= @app_name %>",
+  "main": "assets/js/plugin.js",
+  "repository": {},
+  "description": " "
+}

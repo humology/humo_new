@@ -24,7 +24,7 @@ defmodule <%= @web_namespace %>.ConnCase do
       import Phoenix.ConnTest
       import <%= @web_namespace %>.ConnCase
 
-      alias <%= @web_namespace %>.Router.Helpers, as: Routes
+      import HumoWeb, only: [routes: 0]
 
       # The default endpoint for testing
       @endpoint <%= @endpoint_module %>

@@ -23,7 +23,7 @@ defmodule <%= @web_namespace %> do
 
       import Plug.Conn<%= if @gettext do %>
       import <%= @web_namespace %>.Gettext<% end %>
-      alias <%= @web_namespace %>.Router.Helpers, as: Routes
+      import HumoWeb, only: [routes: 0]
     end
   end
 
@@ -97,7 +97,9 @@ defmodule <%= @web_namespace %> do
 
       import <%= @web_namespace %>.ErrorHelpers<%= if @gettext do %>
       import <%= @web_namespace %>.Gettext<% end %>
-      alias <%= @web_namespace %>.Router.Helpers, as: Routes
+      import HumoWeb, only: [routes: 0]
+      import HumoWeb.RouteAuthorizer
+      import HumoWeb.AuthorizeViewHelpers
     end
   end
 

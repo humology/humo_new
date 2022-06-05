@@ -3,9 +3,6 @@ defmodule HumoNew.Generator do
   import Mix.Generator
   alias HumoNew.Project
 
-  @phoenix Path.expand("../..", __DIR__)
-  @phoenix_version Version.parse!(Mix.Project.config()[:version])
-
   @callback prepare_project(Project.t()) :: Project.t()
   @callback generate(Project.t()) :: Project.t()
 
@@ -148,15 +145,13 @@ defmodule HumoNew.Generator do
     live = html && Keyword.get(opts, :live, true)
     dashboard = Keyword.get(opts, :dashboard, true)
     gettext = Keyword.get(opts, :gettext, true)
-    dev = Keyword.get(opts, :dev, false)
-    phoenix_path = phoenix_path(project, dev)
 
     # We lowercase the database name because according to the
     # SQL spec, they are case insensitive unless quoted, which
     # means creating a database like FoO is the same as foo in
     # some storages.
     {adapter_app, adapter_module, adapter_config} =
-      get_ecto_adapter(db, String.downcase(project.app), project.app_mod)
+      get_ecto_adapter(db, String.downcase(project.app))
 
     pubsub_server = get_pubsub_server(project.app_mod)
 
@@ -165,8 +160,6 @@ defmodule HumoNew.Generator do
         {:ok, value} -> Keyword.put_new(adapter_config, :binary_id, value)
         :error -> adapter_config
       end
-
-    version = @phoenix_version
 
     binding = [
       elixir_version: elixir_version(),
@@ -178,9 +171,6 @@ defmodule HumoNew.Generator do
       web_app_name: project.web_app,
       endpoint_module: inspect(Module.concat(project.web_namespace, Endpoint)),
       web_namespace: inspect(project.web_namespace),
-      phoenix_github_version_tag: "v#{version.major}.#{version.minor}",
-      phoenix_dep: phoenix_dep(phoenix_path, version),
-      phoenix_js_path: phoenix_js_path(phoenix_path),
       pubsub_server: pubsub_server,
       secret_key_base_dev: random_string(64),
       secret_key_base_test: random_string(64),
@@ -214,7 +204,7 @@ defmodule HumoNew.Generator do
 
     config_inject(project_path, "config/dev.exs", """
     # Configure your database
-    config :#{binding[:app_name]}, #{binding[:app_module]}.Repo#{kw_to_config(adapter_config[:dev])}
+    config :humo, Humo.Repo#{kw_to_config(adapter_config[:dev])}
     """)
 
     config_inject(project_path, "config/test.exs", """
@@ -223,13 +213,13 @@ defmodule HumoNew.Generator do
     # The MIX_TEST_PARTITION environment variable can be used
     # to provide built-in test partitioning in CI environment.
     # Run `mix help test` for more information.
-    config :#{binding[:app_name]}, #{binding[:app_module]}.Repo#{kw_to_config(adapter_config[:test])}
+    config :humo, Humo.Repo#{kw_to_config(adapter_config[:test])}
     """)
 
     prod_only_config_inject(project_path, "config/runtime.exs", """
     #{adapter_config[:prod_variables]}
 
-    config :#{binding[:app_name]}, #{binding[:app_module]}.Repo,
+    config :humo, Humo.Repo,
       #{adapter_config[:prod_config]}
     """)
   end
@@ -241,27 +231,27 @@ defmodule HumoNew.Generator do
     |> Module.concat(PubSub)
   end
 
-  defp get_ecto_adapter("mssql", app, module) do
-    {:tds, Ecto.Adapters.Tds, socket_db_config(app, module, "sa", "some!Password")}
+  defp get_ecto_adapter("mssql", app) do
+    {:tds, Ecto.Adapters.Tds, socket_db_config(app, "sa", "some!Password")}
   end
 
-  defp get_ecto_adapter("mysql", app, module) do
-    {:myxql, Ecto.Adapters.MyXQL, socket_db_config(app, module, "root", "")}
+  defp get_ecto_adapter("mysql", app) do
+    {:myxql, Ecto.Adapters.MyXQL, socket_db_config(app, "root", "")}
   end
 
-  defp get_ecto_adapter("postgres", app, module) do
-    {:postgrex, Ecto.Adapters.Postgres, socket_db_config(app, module, "postgres", "postgres")}
+  defp get_ecto_adapter("postgres", app) do
+    {:postgrex, Ecto.Adapters.Postgres, socket_db_config(app, "postgres", "postgres")}
   end
 
-  defp get_ecto_adapter("sqlite3", app, module) do
-    {:ecto_sqlite3, Ecto.Adapters.SQLite3, fs_db_config(app, module)}
+  defp get_ecto_adapter("sqlite3", app) do
+    {:ecto_sqlite3, Ecto.Adapters.SQLite3, fs_db_config(app)}
   end
 
-  defp get_ecto_adapter(db, _app, _mod) do
+  defp get_ecto_adapter(db, _app) do
     Mix.raise("Unknown database #{inspect(db)}")
   end
 
-  defp fs_db_config(app, module) do
+  defp fs_db_config(app) do
     [
       dev: [
         database: {:literal, ~s|Path.expand("../#{app}_dev.db", Path.dirname(__ENV__.file))|},
@@ -274,9 +264,9 @@ defmodule HumoNew.Generator do
         pool_size: 5,
         pool: Ecto.Adapters.SQL.Sandbox
       ],
-      test_setup_all: "Ecto.Adapters.SQL.Sandbox.mode(#{inspect(module)}.Repo, :manual)",
+      test_setup_all: "Ecto.Adapters.SQL.Sandbox.mode(Humo.Repo, :manual)",
       test_setup: """
-          pid = Ecto.Adapters.SQL.Sandbox.start_owner!(#{inspect(module)}.Repo, shared: not tags[:async])
+          pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Humo.Repo, shared: not tags[:async])
           on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)\
       """,
       prod_variables: """
@@ -294,7 +284,7 @@ defmodule HumoNew.Generator do
     ]
   end
 
-  defp socket_db_config(app, module, user, pass) do
+  defp socket_db_config(app, user, pass) do
     [
       dev: [
         username: user,
@@ -313,9 +303,9 @@ defmodule HumoNew.Generator do
         pool: Ecto.Adapters.SQL.Sandbox,
         pool_size: 10,
       ],
-      test_setup_all: "Ecto.Adapters.SQL.Sandbox.mode(#{inspect(module)}.Repo, :manual)",
+      test_setup_all: "Ecto.Adapters.SQL.Sandbox.mode(Humo.Repo, :manual)",
       test_setup: """
-          pid = Ecto.Adapters.SQL.Sandbox.start_owner!(#{inspect(module)}.Repo, shared: not tags[:async])
+          pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Humo.Repo, shared: not tags[:async])
           on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)\
       """,
       prod_variables: """
@@ -352,40 +342,6 @@ defmodule HumoNew.Generator do
 
   defp nil_if_empty([]), do: nil
   defp nil_if_empty(other), do: other
-
-  defp phoenix_path(%Project{} = project, true) do
-    absolute = Path.expand(project.project_path)
-    relative = Path.relative_to(absolute, @phoenix)
-
-    if absolute == relative do
-      Mix.raise("--dev projects must be generated inside Phoenix directory")
-    end
-
-    project
-    |> phoenix_path_prefix()
-    |> Path.join(relative)
-    |> Path.split()
-    |> Enum.map(fn _ -> ".." end)
-    |> Path.join()
-  end
-
-  defp phoenix_path(%Project{}, false) do
-    "deps/phoenix"
-  end
-
-  defp phoenix_path_prefix(_), do: ".."
-
-  defp phoenix_dep("deps/phoenix", %{pre: ["dev"]}),
-    do: ~s[{:phoenix, github: "phoenixframework/phoenix", override: true}]
-
-  defp phoenix_dep("deps/phoenix", version),
-    do: ~s[{:phoenix, "~> #{version}"}]
-
-  defp phoenix_dep(path, _version),
-    do: ~s[{:phoenix, path: #{inspect(path)}, override: true}]
-
-  defp phoenix_js_path("deps/phoenix"), do: "phoenix"
-  defp phoenix_js_path(path), do: "../../#{path}/"
 
   defp random_string(length),
     do: :crypto.strong_rand_bytes(length) |> Base.encode64() |> binary_part(0, length)

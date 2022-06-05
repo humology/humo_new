@@ -9,6 +9,7 @@ defmodule HumoNew.Single do
     {:eex,  "humo_single/config/prod.exs",               :project, "config/prod.exs"},
     {:eex,  "humo_single/config/runtime.exs",            :project, "config/runtime.exs"},
     {:eex,  "humo_single/config/test.exs",               :project, "config/test.exs"},
+    {:eex,  "humo_single/config/plugin.exs",             :project, "config/plugin.exs"},
     {:eex,  "humo_single/lib/app_name/application.ex",   :project, "lib/:app/application.ex"},
     {:eex,  "humo_single/lib/app_name.ex",               :project, "lib/:app.ex"},
     {:keep, "humo_web/controllers",                      :project, "lib/:lib_web_name/controllers"},
@@ -16,6 +17,7 @@ defmodule HumoNew.Single do
     {:eex,  "humo_web/views/error_view.ex",              :project, "lib/:lib_web_name/views/error_view.ex"},
     {:eex,  "humo_web/endpoint.ex",                      :project, "lib/:lib_web_name/endpoint.ex"},
     {:eex,  "humo_web/router.ex",                        :project, "lib/:lib_web_name/router.ex"},
+    {:eex,  "humo_web/plugin_router.ex",                 :project, "lib/:lib_web_name/plugin_router.ex"},
     {:eex,  "humo_web/telemetry.ex",                     :project, "lib/:lib_web_name/telemetry.ex"},
     {:eex,  "humo_single/lib/app_name_web.ex",           :project, "lib/:lib_web_name.ex"},
     {:eex,  "humo_single/mix.exs",                       :project, "mix.exs"},
@@ -39,7 +41,6 @@ defmodule HumoNew.Single do
     {:eex, "humo_web/views/page_view.ex",                     :project, "lib/:lib_web_name/views/page_view.ex"},
     {:eex, "humo_test/controllers/page_controller_test.exs",  :project, "test/:lib_web_name/controllers/page_controller_test.exs"},
     {:eex, "humo_test/views/page_view_test.exs",              :project, "test/:lib_web_name/views/page_view_test.exs"},
-    {:eex, "humo_live/assets/topbar.js",                      :web,     "assets/vendor/topbar.js"},
     {:eex, "humo_web/templates/layout/root.html.heex",        :project, "lib/:lib_web_name/templates/layout/root.html.heex"},
     {:eex, "humo_web/templates/layout/app.html.heex",         :project, "lib/:lib_web_name/templates/layout/app.html.heex"},
     {:eex, "humo_web/templates/layout/live.html.heex",        :project, "lib/:lib_web_name/templates/layout/live.html.heex"},
@@ -49,7 +50,6 @@ defmodule HumoNew.Single do
   ]
 
   template :ecto, [
-    {:eex,  "humo_ecto/repo.ex",              :app, "lib/:app/repo.ex"},
     {:keep, "humo_ecto/priv/repo/migrations", :app, "priv/repo/migrations"},
     {:eex,  "humo_ecto/formatter.exs",        :app, "priv/repo/migrations/.formatter.exs"},
     {:eex,  "humo_ecto/seeds.exs",            :app, "priv/repo/seeds.exs"},
@@ -57,16 +57,15 @@ defmodule HumoNew.Single do
   ]
 
   template :assets, [
-    {:eex,  "humo_static/phoenix.css", :web, "assets/css/phoenix.css"},
-    {:eex,  "humo_assets/app.css",     :web, "assets/css/app.css"},
-    {:eex,  "humo_assets/app.js",      :web, "assets/js/app.js"},
-    {:keep, "humo_assets/vendor",      :web, "assets/vendor"},
+    {:eex,  "humo_assets/app.js",       :web, "assets/js/app.js"},
+    {:eex,  "humo_assets/plugin.js",    :web, "assets/js/plugin.js"},
+    {:eex,  "humo_assets/package.json", :web, "package.json"},
+    {:keep, "humo_assets/vendor",       :web, "assets/vendor"},
+    {:keep, "humo_assets/css",          :web, "assets/css"},
+    {:keep, "humo_assets/static",       :web, "assets/static"}
   ]
 
   template :static, [
-    {:text, "humo_static/robots.txt",  :web, "assets/robots.txt"},
-    {:text, "humo_static/phoenix.png", :web, "assets/images/phoenix.png"},
-    {:text, "humo_static/favicon.ico", :web, "assets/favicon.ico"},
   ]
 
   def prepare_project(%Project{app: app} = project) when not is_nil(app) do

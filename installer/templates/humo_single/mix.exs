@@ -33,7 +33,7 @@ defmodule <%= @app_module %>.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      <%= @phoenix_dep %>,
+      {:phoenix, "~> 1.6.9"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.6"},
       {<%= inspect @adapter_app %>, ">= 0.0.0"},<%= if @html do %>
@@ -47,7 +47,8 @@ defmodule <%= @app_module %>.MixProject do
       {:telemetry_poller, "~> 1.0"},<%= if @gettext do %>
       {:gettext, "~> 0.18"},<% end %>
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:humo, "~> 0.1.0"}
     ]
   end
 
@@ -59,10 +60,12 @@ defmodule <%= @app_module %>.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup"],
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      setup: ["deps.setup", "cmd mix rest.setup"],
+      "deps.setup": ["deps.get", "humo.new.config"],
+      "rest.setup": ["ecto.setup", "humo.assets.setup"],
+      "ecto.setup": ["ecto.create", "humo.ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      test: ["ecto.create --quiet", "humo.ecto.migrate", "test"],
       "assets.deploy": ["esbuild default --minify", "phx.digest"]
     ]
   end

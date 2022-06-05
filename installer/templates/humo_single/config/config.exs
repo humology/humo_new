@@ -7,10 +7,12 @@
 # General application configuration
 import Config
 
+if Path.expand("humo_#{Mix.env()}.exs", __DIR__) |> File.exists?(), do:
+  import_config "humo_#{Mix.env()}.exs"<%= if @namespaced? || @generators do %>
+
 config :<%= @app_name %><%= if @namespaced? do %>,
-  namespace: <%= @app_module %><% end %>,
-  ecto_repos: [<%= @app_module %>.Repo]<%= if @generators do %>,
-  generators: <%= inspect @generators %><% end %>
+  namespace: <%= @app_module %><% end %><%= if @generators do %>,
+  generators: <%= inspect @generators %><% end %><% end %>
 
 # Configures the endpoint
 config :<%= @app_name %>, <%= @endpoint_module %>,
@@ -33,9 +35,6 @@ config :esbuild,
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
-
-# Use Jason for JSON parsing in Phoenix
-config :phoenix, :json_library, Jason
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

@@ -8,6 +8,8 @@ defmodule <%= @web_namespace %>.Router do
     plug :put_root_layout, {<%= @web_namespace %>.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+
+    use HumoWeb.BrowserPlugs, otp_app: :<%= @app_name %>
   end<% end %>
 
   pipeline :api do
@@ -19,6 +21,8 @@ defmodule <%= @web_namespace %>.Router do
 
     get "/", PageController, :index
   end
+
+  use HumoWeb.PluginsRouter, otp_app: :<%= @app_name %>
 
   # Other scopes may use custom stacks.
   # scope "/api", <%= @web_namespace %> do

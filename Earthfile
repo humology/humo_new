@@ -1,26 +1,17 @@
 all:
     BUILD +all-test
     BUILD +all-integration-test
-    BUILD +npm
 
 all-test:
     BUILD --build-arg ELIXIR=1.9.4 --build-arg OTP=21.3.8.24 +test
     BUILD --build-arg ELIXIR=1.12.1 --build-arg OTP=24.0.2 --build-arg RUN_INSTALLER_TESTS=1 +test
 
-test:
+installer-test:
     FROM +test-setup
-    RUN MIX_ENV=test mix deps.compile
-    COPY --dir assets config installer lib integration_test priv test ./
+    COPY --dir installer ./
 
-    # Run unit tests
+    WORKDIR /src/installer
     RUN mix test
-
-    IF [ "$RUN_INSTALLER_TESTS" = "1" ]
-        WORKDIR /src/installer
-        RUN mix test
-    ELSE
-        RUN echo "Skipping installer tests"
-    END
 
 all-integration-test:
     BUILD --build-arg ELIXIR=1.12.1 --build-arg OTP=22.3.4.19 +integration-test
@@ -81,17 +72,6 @@ integration-test:
             while ! pg_isready --host=localhost --port=5432 --quiet; do sleep 1; done; \
             mix test --include database
     END
-
-npm:
-    FROM node:12-alpine3.12
-    WORKDIR /src
-    RUN mkdir assets
-    # Copy package.json + lockfile separatelly to improve caching (JS changes don't trigger `npm install` anymore)
-    COPY assets/package* assets
-    WORKDIR assets
-    RUN npm install
-    COPY assets/ .
-    RUN npm test
 
 setup-base:
    ARG ELIXIR=1.12.1

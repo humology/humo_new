@@ -16,10 +16,38 @@ defmodule Humo.Integration.CodeGeneratorCase do
     output =
       mix_run!(["humo.new", app_path, "--dev", "--no-install"] ++ opts, integration_test_root_path)
 
-    for path <- ~w(mix.lock deps _build) do
+    deps_build_paths =
+      "_build/dev/lib/*"
+      |> Path.wildcard()
+      |> Enum.reject(&String.ends_with?(&1, "/humo"))
+
+    for path <- ~w(mix.lock deps) ++ deps_build_paths do
+      if path != "mix.lock", do: File.mkdir_p!(Path.join(app_root_path, path))
       File.cp_r!(
         Path.join(integration_test_root_path, path),
         Path.join(app_root_path, path)
+      )
+    end
+
+    for env <- [:dev, :test] do
+      File.write!(
+        Path.join(app_root_path, "config/humo_#{env}.exs"),
+        """
+        import Config
+
+        config :humo, Humo,
+          apps: [
+            %{app: :humo, path: "deps/humo"},
+            %{app: :#{app_name}, path: "./"}
+          ],
+          server_app: :#{app_name}
+
+        if Path.expand("../deps/humo/config/plugin.exs", __DIR__) |> File.exists?(),
+          do: import_config("../deps/humo/config/plugin.exs")
+
+        if Path.expand("../config/plugin.exs", __DIR__) |> File.exists?(),
+          do: import_config("../config/plugin.exs")
+        """
       )
     end
 

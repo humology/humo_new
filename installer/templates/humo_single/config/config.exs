@@ -14,6 +14,10 @@ config :<%= @app_name %><%= if @namespaced? do %>,
   namespace: <%= @app_module %><% end %><%= if @generators do %>,
   generators: <%= inspect @generators %><% end %><% end %>
 
+# Configures Humo.Repo adapter
+config :humo, Humo.Repo,
+  adapter: <%= inspect @adapter_module %>
+
 # Configures the endpoint
 config :<%= @app_name %>, <%= @endpoint_module %>,
   url: [host: "localhost"],

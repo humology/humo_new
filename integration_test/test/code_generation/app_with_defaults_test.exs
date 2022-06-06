@@ -23,6 +23,7 @@ defmodule Humo.Integration.CodeGeneration.AppWithDefaultsTest do
   end
 
   describe "phx.gen.html" do
+    @tag :skip
     test "has no compilation or formatter warnings" do
       with_installer_tmp("app_with_defaults", fn tmp_dir ->
         {app_root_path, _} = generate_humo_app(tmp_dir, "phx_blog")
@@ -45,6 +46,7 @@ defmodule Humo.Integration.CodeGeneration.AppWithDefaultsTest do
       end)
     end
 
+    @tag :skip
     @tag database: :postgresql
     test "has a passing test suite" do
       with_installer_tmp("app_with_defaults", fn tmp_dir ->
@@ -70,6 +72,7 @@ defmodule Humo.Integration.CodeGeneration.AppWithDefaultsTest do
   end
 
   describe "phx.gen.json" do
+    @tag :skip
     test "has no compilation or formatter warnings" do
       with_installer_tmp("app_with_defaults", fn tmp_dir ->
         {app_root_path, _} = generate_humo_app(tmp_dir, "phx_blog")
@@ -92,6 +95,7 @@ defmodule Humo.Integration.CodeGeneration.AppWithDefaultsTest do
       end)
     end
 
+    @tag :skip
     @tag database: :postgresql
     test "has a passing test suite" do
       with_installer_tmp("app_with_defaults", fn tmp_dir ->
@@ -117,6 +121,7 @@ defmodule Humo.Integration.CodeGeneration.AppWithDefaultsTest do
   end
 
   describe "phx.gen.live" do
+    @tag :skip
     test "has no compilation or formatter warnings" do
       with_installer_tmp("app_with_defaults", fn tmp_dir ->
         {app_root_path, _} = generate_humo_app(tmp_dir, "phx_blog", ["--live"])
@@ -144,6 +149,7 @@ defmodule Humo.Integration.CodeGeneration.AppWithDefaultsTest do
       end)
     end
 
+    @tag :skip
     @tag database: :postgresql
     test "has a passing test suite" do
       with_installer_tmp("app_with_defaults", fn tmp_dir ->

@@ -48,10 +48,12 @@ defmodule Mix.Tasks.Humo.NewTest do
       end
 
       assert_file "humo_blog/config/config.exs", fn file ->
-        assert file =~ "ecto_repos: [HumoBlog.Repo]"
-        assert file =~ "config :phoenix, :json_library, Jason"
         refute file =~ "namespace: HumoBlog"
         refute file =~ "config :humo_blog, :generators"
+      end
+
+      assert_file "humo_blog/config/plugin.exs", fn file ->
+        assert file =~ "ecto_repos: [Humo.Repo]"
       end
 
       assert_file "humo_blog/config/prod.exs", fn file ->
@@ -103,16 +105,9 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "humo_blog/lib/humo_blog_web/templates/layout/root.html.heex"
       assert_file "humo_blog/lib/humo_blog_web/templates/layout/app.html.heex"
 
-      assert_file "humo_blog/lib/humo_blog_web/templates/page/index.html.heex", fn file ->
-        version = Application.spec(:humo_new, :vsn) |> to_string() |> Version.parse!()
-        changelog_vsn = "v#{version.major}.#{version.minor}"
-        assert file =~
-          "https://github.com/phoenixframework/phoenix/blob/#{changelog_vsn}/CHANGELOG.md"
-      end
-
       # assets
       assert_file "humo_blog/.gitignore", fn file ->
-        assert file =~ "/priv/static/assets/"
+        assert file =~ "/priv/static/"
         assert file =~ "humo_blog-*.tar"
         assert file =~ ~r/\n$/
       end
@@ -123,12 +118,6 @@ defmodule Mix.Tasks.Humo.NewTest do
         assert file =~ "lib/humo_blog_web/templates/.*(eex)"
       end
 
-      assert_file "humo_blog/assets/css/app.css"
-      assert_file "humo_blog/assets/css/phoenix.css"
-
-      refute File.exists? "humo_blog/priv/static/assets/app.css"
-      refute File.exists? "humo_blog/priv/static/assets/phoenix.css"
-      refute File.exists? "humo_blog/priv/static/assets/app.js"
       assert File.exists? "humo_blog/assets/vendor"
 
       assert_file "humo_blog/config/config.exs", fn file ->
@@ -137,7 +126,7 @@ defmodule Mix.Tasks.Humo.NewTest do
       end
 
       # Ecto
-      config = ~r/config :humo_blog, HumoBlog.Repo,/
+      config = ~r/config :humo, Humo.Repo,/
       assert_file "humo_blog/mix.exs", fn file ->
         assert file =~ "{:phoenix_ecto,"
         assert file =~ "aliases: aliases()"
@@ -159,20 +148,16 @@ defmodule Mix.Tasks.Humo.NewTest do
         assert file =~ ~S|url: [host: host, port: 443, scheme: "https"],|
       end
       assert_file "humo_blog/config/test.exs", ~R/database: "humo_blog_test#\{System.get_env\("MIX_TEST_PARTITION"\)\}"/
-      assert_file "humo_blog/lib/humo_blog/repo.ex", ~r"defmodule HumoBlog.Repo"
       assert_file "humo_blog/lib/humo_blog_web.ex", ~r"defmodule HumoBlogWeb"
       assert_file "humo_blog/lib/humo_blog_web/endpoint.ex", ~r"plug Phoenix.Ecto.CheckRepoStatus, otp_app: :humo_blog"
-      assert_file "humo_blog/priv/repo/seeds.exs", ~r"HumoBlog.Repo.insert!"
+      assert_file "humo_blog/priv/repo/seeds.exs", ~r"Humo.Repo.insert!"
       assert_file "humo_blog/test/support/data_case.ex", ~r"defmodule HumoBlog.DataCase"
       assert_file "humo_blog/priv/repo/migrations/.formatter.exs", ~r"import_deps: \[:ecto_sql\]"
 
       # LiveView
       refute_file "humo_blog/lib/humo_blog_web/live/page_live_view.ex"
 
-      assert_file "humo_blog/assets/js/app.js", fn file ->
-        assert file =~ ~s|import {LiveSocket} from "phoenix_live_view"|
-        assert file =~ ~s|liveSocket.connect()|
-      end
+      assert File.exists? "humo_blog/assets/js/app.js"
 
       assert_file "humo_blog/mix.exs", fn file ->
         assert file =~ ~r":phoenix_live_view"
@@ -198,7 +183,7 @@ defmodule Mix.Tasks.Humo.NewTest do
         assert file =~ "summary(\"phoenix.endpoint.stop.duration\","
         assert file =~ "summary(\"phoenix.router_dispatch.stop.duration\","
         assert file =~ "# Database Metrics"
-        assert file =~ "summary(\"humo_blog.repo.query.total_time\","
+        assert file =~ "summary(\"humo.repo.query.total_time\","
       end
 
       # Install dependencies?
@@ -225,7 +210,7 @@ defmodule Mix.Tasks.Humo.NewTest do
 
       # assets
       assert_file "humo_blog/.gitignore", fn file ->
-        assert file =~ "/priv/static/assets/"
+        assert file =~ "/priv/static/"
       end
 
       assert_file "humo_blog/config/dev.exs", fn file ->
@@ -233,22 +218,17 @@ defmodule Mix.Tasks.Humo.NewTest do
         assert file =~ "esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}"
       end
 
-      assert_file "humo_blog/assets/css/app.css"
-      assert_file "humo_blog/assets/css/phoenix.css"
-      assert_file "humo_blog/assets/favicon.ico"
-      assert_file "humo_blog/assets/images/phoenix.png"
       assert_file "humo_blog/assets/js/app.js"
 
       # Ecto
-      config = ~r/config :humo_blog, HumoBlog.Repo,/
-      assert File.exists?("humo_blog/lib/humo_blog/repo.ex")
+      config = ~r/config :humo, Humo.Repo,/
       assert_file "humo_blog/lib/humo_blog_web/endpoint.ex", fn file ->
         assert file =~ "plug Phoenix.Ecto.CheckRepoStatus, otp_app: :humo_blog"
       end
 
       assert_file "humo_blog/lib/humo_blog_web/telemetry.ex", fn file ->
         assert file =~ "# Database Metrics"
-        assert file =~ "summary(\"humo_blog.repo.query.total_time\","
+        assert file =~ "summary(\"humo.repo.query.total_time\","
       end
 
       assert_file "humo_blog/.formatter.exs", fn file ->
@@ -262,7 +242,10 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "humo_blog/config/config.exs", fn file ->
         assert file =~ "config :esbuild"
         refute file =~ "config :humo_blog, :generators"
-        assert file =~ "ecto_repos:"
+      end
+
+      assert_file "humo_blog/config/plugin.exs", fn file ->
+        assert file =~ "ecto_repos: [Humo.Repo]"
       end
 
       assert_file "humo_blog/config/dev.exs", fn file ->
@@ -409,7 +392,7 @@ defmodule Mix.Tasks.Humo.NewTest do
       end
 
       assert_file "humoBlog/config/dev.exs", fn file ->
-        assert file =~ ~r/config :humoBlog, HumoBlog.Repo,/
+        assert file =~ ~r/config :humo, Humo.Repo,/
         assert file =~ "database: \"humoblog_dev\""
       end
     end
@@ -455,7 +438,7 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "custom_path/config/dev.exs", [~r/username: "postgres"/, ~r/password: "postgres"/, ~r/hostname: "localhost"/]
       assert_file "custom_path/config/test.exs", [~r/username: "postgres"/, ~r/password: "postgres"/, ~r/hostname: "localhost"/]
       assert_file "custom_path/config/runtime.exs", [~r/url: database_url/]
-      assert_file "custom_path/lib/custom_path/repo.ex", "Ecto.Adapters.Postgres"
+      assert_file "custom_path/config/config.exs", "config :humo, Humo.Repo,\n  adapter: Ecto.Adapters.Postgres"
 
       assert_file "custom_path/test/support/conn_case.ex", "DataCase.setup_sandbox(tags)"
       assert_file "custom_path/test/support/data_case.ex", "Ecto.Adapters.SQL.Sandbox.start_owner"
@@ -471,7 +454,7 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "custom_path/config/dev.exs", [~r/username: "root"/, ~r/password: ""/]
       assert_file "custom_path/config/test.exs", [~r/username: "root"/, ~r/password: ""/]
       assert_file "custom_path/config/runtime.exs", [~r/url: database_url/]
-      assert_file "custom_path/lib/custom_path/repo.ex", "Ecto.Adapters.MyXQL"
+      assert_file "custom_path/config/config.exs", "config :humo, Humo.Repo,\n  adapter: Ecto.Adapters.MyXQL"
 
       assert_file "custom_path/test/support/conn_case.ex", "DataCase.setup_sandbox(tags)"
       assert_file "custom_path/test/support/data_case.ex", "Ecto.Adapters.SQL.Sandbox.start_owner"
@@ -487,7 +470,7 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "custom_path/config/dev.exs", [~r/database: .*_dev.db/]
       assert_file "custom_path/config/test.exs", [~r/database: .*_test.db/]
       assert_file "custom_path/config/runtime.exs", [~r/database: database_path/]
-      assert_file "custom_path/lib/custom_path/repo.ex", "Ecto.Adapters.SQLite3"
+      assert_file "custom_path/config/config.exs", "config :humo, Humo.Repo,\n  adapter: Ecto.Adapters.SQLite3"
 
       assert_file "custom_path/test/support/conn_case.ex", "DataCase.setup_sandbox(tags)"
       assert_file "custom_path/test/support/data_case.ex", "Ecto.Adapters.SQL.Sandbox.start_owner"
@@ -506,7 +489,7 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "custom_path/config/dev.exs", [~r/username: "sa"/, ~r/password: "some!Password"/]
       assert_file "custom_path/config/test.exs", [~r/username: "sa"/, ~r/password: "some!Password"/]
       assert_file "custom_path/config/runtime.exs", [~r/url: database_url/]
-      assert_file "custom_path/lib/custom_path/repo.ex", "Ecto.Adapters.Tds"
+      assert_file "custom_path/config/config.exs", "config :humo, Humo.Repo,\n  adapter: Ecto.Adapters.Tds"
 
       assert_file "custom_path/test/support/conn_case.ex", "DataCase.setup_sandbox(tags)"
       assert_file "custom_path/test/support/data_case.ex", "Ecto.Adapters.SQL.Sandbox.start_owner"

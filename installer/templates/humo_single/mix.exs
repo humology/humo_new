@@ -48,7 +48,7 @@ defmodule <%= @app_module %>.MixProject do
       {:gettext, "~> 0.18"},<% end %>
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:humo, "~> 0.1.0"}
+      {:humo, "~> 0.1.2"}
     ]
   end
 

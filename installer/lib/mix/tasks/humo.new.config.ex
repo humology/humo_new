@@ -13,8 +13,8 @@ defmodule Mix.Tasks.Humo.New.Config do
     ],<% end %>
     server_app: <%= inspect(@otp_app) %><%= for {_app, path} <- @apps do %>
   <% config_path = "../" <> String.replace_prefix(Path.join(path, "config/plugin.exs"), "./", "") %>
-  if Path.expand(<%= inspect(config_path) %>, __DIR__) |> File.exists?(), do:
-    import_config <%= inspect(config_path) %><% end %>
+  if Path.expand(<%= inspect(config_path) %>, __DIR__) |> File.exists?(),
+    do: import_config <%= inspect(config_path) %><% end %>
   """)
 
   @impl true

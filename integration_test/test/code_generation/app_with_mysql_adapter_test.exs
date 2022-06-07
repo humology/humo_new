@@ -2,6 +2,7 @@ defmodule Humo.Integration.CodeGeneration.AppWithMySqlAdapterTest do
   use Humo.Integration.CodeGeneratorCase, async: true
 
   describe "phx.gen.html" do
+    @tag :skip
     @tag database: :mysql
     test "has a passing test suite" do
       with_installer_tmp("app_with_defaults", fn tmp_dir ->
@@ -28,6 +29,7 @@ defmodule Humo.Integration.CodeGeneration.AppWithMySqlAdapterTest do
   end
 
   describe "phx.gen.json" do
+    @tag :skip
     @tag database: :mysql
     test "has a passing test suite" do
       with_installer_tmp("app_with_defaults", fn tmp_dir ->
@@ -54,6 +56,7 @@ defmodule Humo.Integration.CodeGeneration.AppWithMySqlAdapterTest do
   end
 
   describe "phx.gen.live" do
+    @tag :skip
     @tag database: :mysql
     test "has a passing test suite" do
       with_installer_tmp("app_with_defaults", fn tmp_dir ->

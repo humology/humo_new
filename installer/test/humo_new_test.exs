@@ -438,7 +438,7 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "custom_path/config/dev.exs", [~r/username: "postgres"/, ~r/password: "postgres"/, ~r/hostname: "localhost"/]
       assert_file "custom_path/config/test.exs", [~r/username: "postgres"/, ~r/password: "postgres"/, ~r/hostname: "localhost"/]
       assert_file "custom_path/config/runtime.exs", [~r/url: database_url/]
-      assert_file "custom_path/config/config.exs", "config :humo, Humo.Repo,\n  adapter: Ecto.Adapters.Postgres"
+      assert_file "custom_path/config/config.exs", "config :humo, Humo.Repo, adapter: Ecto.Adapters.Postgres"
 
       assert_file "custom_path/test/support/conn_case.ex", "DataCase.setup_sandbox(tags)"
       assert_file "custom_path/test/support/data_case.ex", "Ecto.Adapters.SQL.Sandbox.start_owner"
@@ -454,7 +454,7 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "custom_path/config/dev.exs", [~r/username: "root"/, ~r/password: ""/]
       assert_file "custom_path/config/test.exs", [~r/username: "root"/, ~r/password: ""/]
       assert_file "custom_path/config/runtime.exs", [~r/url: database_url/]
-      assert_file "custom_path/config/config.exs", "config :humo, Humo.Repo,\n  adapter: Ecto.Adapters.MyXQL"
+      assert_file "custom_path/config/config.exs", "config :humo, Humo.Repo, adapter: Ecto.Adapters.MyXQL"
 
       assert_file "custom_path/test/support/conn_case.ex", "DataCase.setup_sandbox(tags)"
       assert_file "custom_path/test/support/data_case.ex", "Ecto.Adapters.SQL.Sandbox.start_owner"
@@ -470,7 +470,7 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "custom_path/config/dev.exs", [~r/database: .*_dev.db/]
       assert_file "custom_path/config/test.exs", [~r/database: .*_test.db/]
       assert_file "custom_path/config/runtime.exs", [~r/database: database_path/]
-      assert_file "custom_path/config/config.exs", "config :humo, Humo.Repo,\n  adapter: Ecto.Adapters.SQLite3"
+      assert_file "custom_path/config/config.exs", "config :humo, Humo.Repo, adapter: Ecto.Adapters.SQLite3"
 
       assert_file "custom_path/test/support/conn_case.ex", "DataCase.setup_sandbox(tags)"
       assert_file "custom_path/test/support/data_case.ex", "Ecto.Adapters.SQL.Sandbox.start_owner"
@@ -489,7 +489,7 @@ defmodule Mix.Tasks.Humo.NewTest do
       assert_file "custom_path/config/dev.exs", [~r/username: "sa"/, ~r/password: "some!Password"/]
       assert_file "custom_path/config/test.exs", [~r/username: "sa"/, ~r/password: "some!Password"/]
       assert_file "custom_path/config/runtime.exs", [~r/url: database_url/]
-      assert_file "custom_path/config/config.exs", "config :humo, Humo.Repo,\n  adapter: Ecto.Adapters.Tds"
+      assert_file "custom_path/config/config.exs", "config :humo, Humo.Repo, adapter: Ecto.Adapters.Tds"
 
       assert_file "custom_path/test/support/conn_case.ex", "DataCase.setup_sandbox(tags)"
       assert_file "custom_path/test/support/data_case.ex", "Ecto.Adapters.SQL.Sandbox.start_owner"

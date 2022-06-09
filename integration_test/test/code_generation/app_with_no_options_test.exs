@@ -33,35 +33,23 @@ defmodule Humo.Integration.CodeGeneration.AppWithNoOptionsTest do
       mix_run!(["ecto.drop"], app_root_path)
       mix_run!(["ecto.create"], app_root_path)
 
-      spawn_link(fn ->
-        run_phx_server(app_root_path)
+      with_phx_server(app_root_path, fn ->
+        :inets.start()
+        {:ok, response} = request_with_retries("http://localhost:4000")
+        assert response.status_code == 200
+        assert response.body =~ "PhxBlog"
       end)
 
-      :inets.start()
-      {:ok, response} = request_with_retries("http://localhost:4000")
-      assert response.status_code == 200
-      assert response.body =~ "PhxBlog"
-
-      assert File.stat!(Path.join(app_root_path, "lib/phx_blog_web/views/page_view.ex")) > @epoch
+      assert File.stat!(Path.join(app_root_path, "lib/phx_blog_web/views/page_view.ex")).atime > @epoch
       assert_passes_formatter_check(app_root_path)
       assert_tests_pass(app_root_path)
     end)
   end
 
-  defp run_phx_server(app_root_path) do
-    {_output, 0} =
-      System.cmd(
-        "elixir",
-        [
-          "--no-halt",
-          "-e",
-          "spawn fn -> IO.gets('') && System.halt(0) end",
-          "-S",
-          "mix",
-          "phx.server"
-        ],
-        cd: app_root_path
-      )
+  defp with_phx_server(app_root_path, function) do
+    port = Port.open({:spawn, "iex -S mix phx.server"}, [:binary, {:cd, app_root_path}])
+    function.()
+    send(port, {self(), :close})
   end
 
   defp request_with_retries(url, retries \\ 10)

@@ -1,7 +1,7 @@
 Code.require_file "mix_helper.exs", __DIR__
 
 defmodule Mix.Tasks.Humo.New.ConfigTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
 
   import MixHelper
 
@@ -129,11 +129,17 @@ defmodule Mix.Tasks.Humo.New.ConfigTest do
   end
 
   defp write_mix(path, project, deps \\ []) do
+    module_namespace =
+      Macro.camelize(to_string(project[:app]))
+
+    random_suffix =
+      List.to_string(for _ <- 1..16, do: Enum.random(?a..?z))
+
     mkdir_write_file(
       Path.join(path, "mix.exs"),
       """
-      defmodule Humo.MixProject do
-        def project, do: #{inspect(project)}
+      defmodule #{module_namespace}#{random_suffix}.MixProject do
+        def project, do: #{inspect(project)} ++ [deps: deps()]
         defp deps, do: #{inspect(deps)}
       end
       """

@@ -32,7 +32,7 @@ defmodule Mix.Tasks.Humo.New.Config do
   end
 
   defp ordered_apps(env) do
-    mix_project = get_mix_fun_body("./", :project)
+    mix_project = get_mix_project("./")
     otp_app = Keyword.fetch!(mix_project, :app)
     otp_deps_path = Keyword.get(mix_project, :deps_path, "deps")
 
@@ -58,8 +58,7 @@ defmodule Mix.Tasks.Humo.New.Config do
                   {app, deps}
                 end
 
-              new_known_apps =
-                MapSet.new(unlocked_apps) |> MapSet.union(known_apps)
+              new_known_apps = MapSet.new(unlocked_apps) |> MapSet.union(known_apps)
 
               {unlocked_apps, {new_apps_deps, new_known_apps}}
           end
@@ -78,8 +77,7 @@ defmodule Mix.Tasks.Humo.New.Config do
         {[app | rest], known_apps} ->
           deps = get_app_deps(app, env, otp_deps_path)
           unknown_apps = Enum.reject(deps, &(&1 in known_apps))
-          new_known_apps =
-            MapSet.new([app | unknown_apps]) |> MapSet.union(known_apps)
+          new_known_apps = MapSet.new([app | unknown_apps]) |> MapSet.union(known_apps)
           {[{app, MapSet.new(deps)}], {unknown_apps ++ rest, new_known_apps}}
 
         {[], known_apps} ->
@@ -92,7 +90,7 @@ defmodule Mix.Tasks.Humo.New.Config do
 
   defp get_app_deps({_app, path}, env, otp_deps_path) do
     if Path.join(path, "mix.exs") |> File.exists?() do
-      get_deps_from_mix(path, env, otp_deps_path)
+      get_deps_paths_from_mix(path, env, otp_deps_path)
     else
       # ignore dependencies without mix.exs
       []
@@ -101,7 +99,7 @@ defmodule Mix.Tasks.Humo.New.Config do
 
   defp is_humo_plugin?(app_path) do
     if Path.join(app_path, "mix.exs") |> File.exists?() do
-      get_mix_fun_body(app_path, :project)
+      get_mix_project(app_path)
       |> Keyword.get(:humo_plugin, false)
     else
       # ignore dependencies without mix.exs
@@ -109,32 +107,40 @@ defmodule Mix.Tasks.Humo.New.Config do
     end
   end
 
-  defp get_deps_from_mix(app_path, env, otp_deps_path) do
-    get_mix_fun_body(app_path, :deps)
+  defp get_deps_paths_from_mix(app_path, env, otp_deps_path) do
+    get_mix_project(app_path)
+    |> Keyword.get(:deps, [])
     |> Enum.map(fn
-      {:{}, _, [app, _, params]} -> {app, params}
-
-      {app, _} -> {app, []}
+      {app, version} -> {app, version, []}
+      {app, version, opts} -> {app, version, opts}
     end)
-    |> Enum.filter(fn {_app, params} ->
-      env in List.wrap(Keyword.get(params, :only, env))
+    |> Enum.filter(fn {_app, _version, opts} ->
+      env in List.wrap(Keyword.get(opts, :only, env))
     end)
-    |> Enum.map(fn {app, params} ->
-      {app, Keyword.get(params, :path, Path.join(otp_deps_path, "#{app}"))}
+    |> Enum.map(fn {app, _version, opts} ->
+      {app, Keyword.get(opts, :path, Path.join(otp_deps_path, "#{app}"))}
     end)
     |> Enum.filter(fn {_app, path} -> is_humo_plugin?(path) end)
     |> MapSet.new()
   end
 
-  defp get_mix_fun_body(app_path, fun_name) do
+  defp get_mix_project(app_path) do
     mix_path = Path.join(app_path, "mix.exs")
+    mix_module = get_module_from_mix(mix_path)
 
-    {:ok, {_, _, [_, [do: {_, _, functions}]]}} =
-      File.read!(mix_path) |> Code.string_to_quoted()
+    unless function_exported?(mix_module, :project, 0) do
+      Code.compile_file(mix_path)
+    end
 
-    {_, _, [_, [{:do, quoted_body}]]} =
-      Enum.find(functions, &match?({_, _, [{^fun_name, _, _}, _]}, &1))
+    mix_module.project()
+  end
 
-    quoted_body
+  defp get_module_from_mix(mix_path) do
+    {:defmodule, _, [{:__aliases__, _, module_list} | _]} =
+      mix_path
+      |> File.read!()
+      |> Code.string_to_quoted!()
+
+    Module.concat(module_list)
   end
 end

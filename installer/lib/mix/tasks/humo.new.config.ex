@@ -66,6 +66,7 @@ defmodule Mix.Tasks.Humo.New.Config do
         fn _known_apps -> :ok end
       )
       |> Enum.to_list()
+      |> Enum.filter(fn {_app, path} -> is_humo_plugin?(path) end)
 
     {otp_app, apps}
   end
@@ -120,7 +121,6 @@ defmodule Mix.Tasks.Humo.New.Config do
     |> Enum.map(fn {app, _version, opts} ->
       {app, Keyword.get(opts, :path, Path.join(otp_deps_path, "#{app}"))}
     end)
-    |> Enum.filter(fn {_app, path} -> is_humo_plugin?(path) end)
     |> MapSet.new()
   end
 

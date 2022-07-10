@@ -132,14 +132,15 @@ defmodule Mix.Tasks.Humo.New.Config do
   end
 
   defp get_mix_project(app_path) do
-    mix_path = Path.join(app_path, "mix.exs")
-    mix_module = get_module_from_mix(mix_path)
+    File.cd!(app_path, fn ->
+      mix_module = get_module_from_mix("mix.exs")
 
-    unless function_exported?(mix_module, :project, 0) do
-      Code.compile_file(mix_path)
-    end
+      unless function_exported?(mix_module, :project, 0) do
+        Code.compile_file("mix.exs")
+      end
 
-    mix_module.project()
+      mix_module.project()
+    end)
   end
 
   defp get_module_from_mix(mix_path) do

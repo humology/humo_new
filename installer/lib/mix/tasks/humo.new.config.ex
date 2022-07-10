@@ -112,14 +112,21 @@ defmodule Mix.Tasks.Humo.New.Config do
     get_mix_project(app_path)
     |> Keyword.get(:deps, [])
     |> Enum.map(fn
-      {app, version} -> {app, version, []}
-      {app, version, opts} -> {app, version, opts}
+      {app, version} when is_binary(version) -> {app, []}
+      {app, opts} when is_list(opts) -> {app, opts}
+      {app, _version, opts} -> {app, opts}
     end)
-    |> Enum.filter(fn {_app, _version, opts} ->
+    |> Enum.filter(fn {_app, opts} ->
       env in List.wrap(Keyword.get(opts, :only, env))
     end)
-    |> Enum.map(fn {app, _version, opts} ->
-      {app, Keyword.get(opts, :path, Path.join(otp_deps_path, "#{app}"))}
+    |> Enum.map(fn {app, opts} ->
+      case Keyword.get(opts, :path) do
+        nil ->
+          {app, Path.join(otp_deps_path, "#{app}")}
+
+        dep_path ->
+          {app, join_relative_paths(app_path, dep_path)}
+      end
     end)
     |> MapSet.new()
   end
@@ -142,5 +149,30 @@ defmodule Mix.Tasks.Humo.New.Config do
       |> Code.string_to_quoted!()
 
     Module.concat(module_list)
+  end
+
+  defp join_relative_paths(path1, path2) do
+    Path.join([path1, path2])
+    |> simplify_path()
+  end
+
+  defp simplify_path(path) do
+    Path.split(path)
+    |> do_simplify_path([])
+    |> Path.join()
+  end
+
+  defp do_simplify_path([], acc), do: Enum.reverse(acc)
+
+  defp do_simplify_path(["." | rest], acc) do
+    do_simplify_path(rest, acc)
+  end
+
+  defp do_simplify_path([".." | rest], [last | acc]) when last != ".." do
+    do_simplify_path(rest, acc)
+  end
+
+  defp do_simplify_path([item | rest], acc) do
+    do_simplify_path(rest, [item | acc])
   end
 end

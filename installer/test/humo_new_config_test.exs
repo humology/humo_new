@@ -117,6 +117,31 @@ defmodule Mix.Tasks.Humo.New.ConfigTest do
     end)
   end
 
+  test "when dependency has relative path attribute" do
+    in_tmp("mix_humo_new_config", fn ->
+      write_mix("../../core", app: :core, humo_plugin: true)
+      write_mix("deps/debug", app: :debug, humo_plugin: true)
+
+      write_mix("../apps/biz/users", [app: :users, humo_plugin: true], [
+        {:core, path: "../../../../core"},
+        {:debug, "~> 1"}
+      ])
+
+      write_mix("", [app: :my_app, humo_plugin: true], [{:users, path: "../apps/biz/users"}])
+
+      Mix.Tasks.Humo.New.Config.run([])
+
+      for env <- [:test, :dev, :prod] do
+        file_content = File.read!("config/humo_#{env}.exs")
+
+        assert file_content =~ ~s(%{app: :my_app, path: "./"})
+        assert file_content =~ ~s(%{app: :users, path: "../apps/biz/users"})
+        assert file_content =~ ~s(%{app: :debug, path: "deps/debug"})
+        assert file_content =~ ~s(%{app: :core, path: "../../core"})
+      end
+    end)
+  end
+
   test "circular dependency error" do
     in_tmp("mix_humo_new_config", fn ->
       write_mix("deps/core", [app: :core, humo_plugin: true], [{:users, "~> 1"}])

@@ -6,15 +6,14 @@ defmodule Mix.Tasks.Humo.New.Config do
   Mix.Generator.embed_template(:config, """
   import Config
 
-  config :humo, Humo,<% {last_app, _} = List.last(@apps, {nil, nil}) %>
-    <%= if @apps == [] do %>apps: []
-    <% else %>apps: [<%= for {app, path} <- @apps do %>
-      <%= inspect(%{app: app, path: path}) %><%= if app != last_app do %>,<% end %><% end %>
-    ],<% end %>
-    server_app: <%= inspect(@otp_app) %><%= for {_app, path} <- @apps do %>
-  <% config_path = "../" <> String.replace_prefix(Path.join(path, "config/plugin.exs"), "./", "") %>
+  config :humo, Humo,
+    apps: [<%= if @apps != [] do %>
+      <%= Enum.map(@apps, &inspect(&1)) |> Enum.join(",\n    ") %>
+    <% end %>],
+    server_app: <%= inspect(@otp_app) %><%= for %{path: path} <- @apps do %>
+  <% config_path = normalize(["../", path, "config/plugin.exs"]) %>
   if Path.expand(<%= inspect(config_path) %>, __DIR__) |> File.exists?(),
-    do: import_config <%= inspect(config_path) %><% end %>
+    do: import_config(<%= inspect(config_path) %>)<% end %>
   """)
 
   @impl true
@@ -67,6 +66,7 @@ defmodule Mix.Tasks.Humo.New.Config do
       )
       |> Enum.to_list()
       |> Enum.filter(fn {_app, path} -> is_humo_plugin?(path) end)
+      |> Enum.map(fn {app, path} -> %{app: app, path: path} end)
 
     {otp_app, apps}
   end

@@ -36,13 +36,13 @@ defmodule Mix.Tasks.Humo.New.ConfigTest do
         server_app: :my_app
 
       if Path.expand("../deps/core/config/plugin.exs", __DIR__) |> File.exists?(),
-        do: import_config "../deps/core/config/plugin.exs"
+        do: import_config("../deps/core/config/plugin.exs")
 
       if Path.expand("../deps/users/config/plugin.exs", __DIR__) |> File.exists?(),
-        do: import_config "../deps/users/config/plugin.exs"
+        do: import_config("../deps/users/config/plugin.exs")
 
       if Path.expand("../config/plugin.exs", __DIR__) |> File.exists?(),
-        do: import_config "../config/plugin.exs"
+        do: import_config("../config/plugin.exs")
       """
 
       assert_file("config/humo_test.exs", expected_config)
@@ -63,7 +63,7 @@ defmodule Mix.Tasks.Humo.New.ConfigTest do
 
         debug_import_config = """
         if Path.expand("../deps/debug/config/plugin.exs", __DIR__) |> File.exists?(),
-          do: import_config "../deps/debug/config/plugin.exs"
+          do: import_config("../deps/debug/config/plugin.exs")
         """
 
         for env <- [:test, :dev, :prod] do

@@ -125,7 +125,7 @@ defmodule Mix.Tasks.Humo.New.Config do
           {app, Path.join(otp_deps_path, "#{app}")}
 
         dep_path ->
-          {app, join_relative_paths(app_path, dep_path)}
+          {app, normalize([app_path, dep_path])}
       end
     end)
     |> MapSet.new()
@@ -152,28 +152,24 @@ defmodule Mix.Tasks.Humo.New.Config do
     Module.concat(module_list)
   end
 
-  defp join_relative_paths(path1, path2) do
-    Path.join([path1, path2])
-    |> simplify_path()
-  end
-
-  defp simplify_path(path) do
-    Path.split(path)
-    |> do_simplify_path([])
+  defp normalize(paths) when is_list(paths) do
+    Path.join(paths)
+    |> Path.split()
+    |> do_normalize([])
     |> Path.join()
   end
 
-  defp do_simplify_path([], acc), do: Enum.reverse(acc)
+  defp do_normalize([], acc), do: Enum.reverse(acc)
 
-  defp do_simplify_path(["." | rest], acc) do
-    do_simplify_path(rest, acc)
+  defp do_normalize(["." | rest], acc) do
+    do_normalize(rest, acc)
   end
 
-  defp do_simplify_path([".." | rest], [last | acc]) when last != ".." do
-    do_simplify_path(rest, acc)
+  defp do_normalize([".." | rest], [last | acc]) when last != ".." do
+    do_normalize(rest, acc)
   end
 
-  defp do_simplify_path([item | rest], acc) do
-    do_simplify_path(rest, [item | acc])
+  defp do_normalize([item | rest], acc) do
+    do_normalize(rest, [item | acc])
   end
 end

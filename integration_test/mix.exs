@@ -32,7 +32,7 @@ defmodule Humo.Integration.MixProject do
   defp deps do
     [
       {:humo_new, path: "../installer"},
-      {:humo, "~> 0.1.2", only: [:prod]},
+      {:humo, "~> 0.2.1", only: [:prod]},
       {:phoenix, "~> 1.6.9"},
       {:phoenix_ecto, "~> 4.4"},
       {:esbuild, "~> 0.4", runtime: false},

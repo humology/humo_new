@@ -16,10 +16,20 @@ defmodule <%= @web_namespace %>.Router do
     plug :accepts, ["json"]
   end<%= if @html do %>
 
+  pipeline :humo_dashboard do
+    plug :put_root_layout, {<%= @web_namespace %>.LayoutView, "dashboard.html"}
+  end
+
   scope "/", <%= @web_namespace %> do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    scope "/humo", Dashboard, as: :dashboard do
+      pipe_through :humo_dashboard
+
+      get "/", PageController, :index
+    end
   end
 
   use HumoWeb.PluginsRouter, otp_app: :<%= @app_name %>

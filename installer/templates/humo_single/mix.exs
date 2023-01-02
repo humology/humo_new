@@ -7,10 +7,10 @@ defmodule <%= @app_module %>.MixProject do
       version: "0.1.0",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: <%= if @gettext do %>[:gettext] ++ <% end %>Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      humo_plugin: true
     ]
   end
 
@@ -38,17 +38,16 @@ defmodule <%= @app_module %>.MixProject do
       {:ecto_sql, "~> 3.6"},
       {<%= inspect @adapter_app %>, ">= 0.0.0"},<%= if @html do %>
       {:phoenix_html, "~> 3.0"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_live_reload, "~> 1.3.3", only: :dev},
       {:phoenix_live_view, "~> 0.17.5"},
       {:floki, ">= 0.30.0", only: :test},<% end %><%= if @dashboard do %>
       {:phoenix_live_dashboard, "~> 0.6"},<% end %>
-      {:esbuild, "~> 0.4", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},<%= if @gettext do %>
       {:gettext, "~> 0.18"},<% end %>
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:humo, "~> 0.1.2"}
+      {:humo, "~> 0.2.1"}
     ]
   end
 
@@ -66,7 +65,7 @@ defmodule <%= @app_module %>.MixProject do
       "ecto.setup": ["ecto.create", "humo.ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "humo.ecto.migrate", "test"],
-      "assets.deploy": ["esbuild default --minify", "phx.digest"]
+      "assets.deploy": ["humo.assets.copy", "cmd npm run deploy", "phx.digest"]
     ]
   end
 end

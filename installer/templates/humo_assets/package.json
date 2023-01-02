@@ -2,5 +2,16 @@
   "name": "<%= @app_name %>",
   "main": "assets/js/plugin.js",
   "repository": {},
-  "description": " "
+  "description": " ",
+  "scripts": {
+    "watch": "(cd assets/ && node build.mjs --watch)",
+    "deploy": "(cd assets/ && node build.mjs --deploy)"
+  },
+  "dependencies": {
+    "@tabler/core": "^1.0.0-beta15"
+  },
+  "devDependencies": {
+    "esbuild": "^0.15.12",
+    "esbuild-sass-plugin": "~2.2.6"
+  }
 }

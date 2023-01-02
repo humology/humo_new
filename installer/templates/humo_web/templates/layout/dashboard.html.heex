@@ -22,11 +22,25 @@
           <div class="flex-row order-md-last">
             <.account_menu conn={@conn}/>
           </div>
-          <.root_menu conn={@conn}/>
+          <.dashboard_menu conn={@conn}/>
         </div>
       </header>
 
       <div class="page-wrapper">
+        <div class="container-xl">
+          <div class="page-header d-print-none">
+            <div class="row g-2 align-items-center">
+              <div class="col">
+                <div class="page-pretitle">
+                  <%%= assigns[:page_pretitle] || "Dashboard" %>
+                </div>
+                <h2 class="page-title">
+                  <%%= assigns[:page_title] || "Title" %>
+                </h2>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="page-body">
           <div class="container-xl">
             <%%= @inner_content %>

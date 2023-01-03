@@ -234,7 +234,7 @@ defmodule Mix.Tasks.Humo.NewTest do
       # Instructions
       assert_received {:mix_shell, :info, ["\nWe are almost there" <> _ = msg]}
       assert msg =~ "$ cd humo_blog"
-      assert msg =~ "$ mix deps.get"
+      assert msg =~ "$ mix humo.setup"
 
       assert_received {:mix_shell, :info, ["Then configure your database in config/dev.exs" <> _]}
       assert_received {:mix_shell, :info, ["Start your Phoenix app" <> _]}
@@ -479,7 +479,7 @@ defmodule Mix.Tasks.Humo.NewTest do
       # Instructions
       assert_received {:mix_shell, :info, ["\nWe are almost there" <> _ = msg]}
       assert msg =~ "$ cd humo_blog"
-      assert msg =~ "$ mix deps.get"
+      assert msg =~ "$ mix humo.setup"
 
       assert_received {:mix_shell, :info, ["Then configure your database in config/dev.exs" <> _]}
       assert_received {:mix_shell, :info, ["Start your Phoenix app" <> _]}

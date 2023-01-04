@@ -33,7 +33,7 @@ defmodule Mix.Tasks.Humo.New.ConfigTest do
           %{app: :users, path: "deps/users"},
           %{app: :my_app, path: "./"}
         ],
-        server_app: :my_app
+        otp_app: :my_app
 
       if Path.expand("../deps/core/config/plugin.exs", __DIR__) |> File.exists?(),
         do: import_config("../deps/core/config/plugin.exs")

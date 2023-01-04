@@ -14,7 +14,10 @@ defmodule Humo.Integration.CodeGeneratorCase do
     app_root_path = get_app_root_path(tmp_dir, app_name)
 
     output =
-      mix_run!(["humo.new", app_path, "--dev", "--no-install"] ++ opts, integration_test_root_path)
+      mix_run!(
+        ["humo.new", app_path, "--dev", "--no-install"] ++ opts,
+        integration_test_root_path
+      )
 
     for path <- ~w(mix.lock deps _build) do
       File.cp_r!(
@@ -34,7 +37,7 @@ defmodule Humo.Integration.CodeGeneratorCase do
             %{app: :humo, path: "deps/humo"},
             %{app: :#{app_name}, path: "./"}
           ],
-          server_app: :#{app_name}
+          otp_app: :#{app_name}
 
         if Path.expand("../deps/humo/config/plugin.exs", __DIR__) |> File.exists?(),
           do: import_config("../deps/humo/config/plugin.exs")

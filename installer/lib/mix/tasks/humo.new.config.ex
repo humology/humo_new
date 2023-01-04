@@ -10,7 +10,7 @@ defmodule Mix.Tasks.Humo.New.Config do
     apps: [<%= if @apps != [] do %>
       <%= Enum.map(@apps, &inspect(&1)) |> Enum.join(",\n    ") %>
     <% end %>],
-    server_app: <%= inspect(@otp_app) %><%= for %{path: path} <- @apps do %>
+    otp_app: <%= inspect(@otp_app) %><%= for %{path: path} <- @apps do %>
   <% config_path = normalize(["../", path, "config/plugin.exs"]) %>
   if Path.expand(<%= inspect(config_path) %>, __DIR__) |> File.exists?(),
     do: import_config(<%= inspect(config_path) %>)<% end %>

@@ -13,7 +13,7 @@ defmodule <%= @app_module %>.Application do
     ]
 
     children =
-      if Humo.is_server_app_module(__MODULE__) do
+      if Humo.is_otp_app_module(__MODULE__) do
         children ++
           [
             # Start the PubSub system

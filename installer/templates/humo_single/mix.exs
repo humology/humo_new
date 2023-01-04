@@ -10,7 +10,11 @@ defmodule <%= @app_module %>.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      humo_plugin: true
+      humo_plugin: true,
+      package: [
+        files:
+          ~w(assets config/plugin.exs lib priv/gettext priv/repo mix.exs package.json LICENSE README.md .formatter.exs)
+      ]
     ]
   end
 
@@ -47,7 +51,7 @@ defmodule <%= @app_module %>.MixProject do
       {:gettext, "~> 0.18"},<% end %>
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:humo, "~> 0.2.1"}
+      {:humo, "~> 0.3.0"}
     ]
   end
 

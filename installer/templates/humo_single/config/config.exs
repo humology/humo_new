@@ -7,8 +7,8 @@
 # General application configuration
 import Config
 
-if Path.expand("humo_#{Mix.env()}.exs", __DIR__) |> File.exists?(),
-  do: import_config("humo_#{Mix.env()}.exs")<%= if @namespaced? || @generators do %>
+if Path.expand("humo_#{config_env()}.exs", __DIR__) |> File.exists?(),
+  do: import_config("humo_#{config_env()}.exs")<%= if @namespaced? || @generators do %>
 
 config :<%= @app_name %><%= if @namespaced? do %>,
   namespace: <%= @app_module %><% end %><%= if @generators do %>,
